@@ -4,6 +4,7 @@ import { Terrain } from './terrain';
 export class Yer {
     private tash: Tash;
     private highlight: boolean;
+    private _yurumeHighlight: boolean;
     private terrain: Terrain;
 
     constructor(tash: Tash | null, terrain: Terrain) {
@@ -34,5 +35,13 @@ export class Yer {
 
     getHighlight(): boolean {
         return this.highlight;
+    }
+
+    set yurumeHighlight(bool: boolean) {
+        this._yurumeHighlight = bool;
+    }
+
+    get yurumeHighlight(): boolean {
+        return this._yurumeHighlight;
     }
 }

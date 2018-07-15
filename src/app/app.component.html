@@ -24,8 +24,9 @@
   </li>
 </ul>
 
-<div *ngFor="let satir of oyuntahtasi" class="row">
-  <div *ngFor="let yer of satir" class="col-1">
+<div *ngFor="let satir of oyuntahtasi.yerler; let i = index" class="row">
+  <div *ngFor="let yer of satir; let j = index" [class.gosterge]="yer.getHighlight()" [class.yurume]="yer.yurumeHighlight"
+    class="col" (click)="yerTiklama(i,j)">
     {{ yer.getTerrain().getResim() }}
   </div>
 </div>

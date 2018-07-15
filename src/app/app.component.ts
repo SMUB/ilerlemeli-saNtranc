@@ -14,4 +14,10 @@ export class AppComponent implements OnInit {
     this.oyuntahtasi = new OyunTahtasi(8, 8);
   }
 
+  yerTiklama(i, j) {
+    this.oyuntahtasi.secimleriTemizle();
+    this.oyuntahtasi.seciliyer = { i: i, j: j };
+    this.oyuntahtasi.seciliyerİsaretle();
+  }
+
 }
