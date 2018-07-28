@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { OyunTahtasi } from './oyuntahtasi';
 import { style } from 'typestyle';
+import { Oyuncu } from './tash';
+import { Yer } from './yer';
 
 @Component({
   selector: 'app-root',
@@ -22,9 +24,12 @@ export class AppComponent implements OnInit {
 
   yurume = style({ outline: 'blue 1px solid' });
 
+  yeme = style({ outline: 'red 1px solid' });
+
   icerik = style({ position: 'absolute' });
 
-  title = 'app';
+  oyuncu = Oyuncu.siyah;
+
   oyuntahtasi: OyunTahtasi;
 
   ngOnInit() {
@@ -32,16 +37,24 @@ export class AppComponent implements OnInit {
   }
 
   yerTiklama(i, j) {
-    this.oyuntahtasi.secimleriTemizle();
-    this.oyuntahtasi.seciliyer = { i: i, j: j };
-    this.oyuntahtasi.seciliyerİsaretle();
+    // oyuncu yetki kontrolü
+    if (this.oyuntahtasi.yerler[i][j].getTash().oyuncu === this.oyuncu) {
+      this.oyuntahtasi.secimleriTemizle();
+      this.oyuntahtasi.seciliyer = { i: i, j: j };
+      this.oyuntahtasi.seciliyerİsaretle(this.oyuncu);
+    }
   }
 
-  highlightStyle(yer) {
-    if (yer.getHighlight()) {
-      return this.gosterge;
-    } else if (yer.yurumeHighlight) {
-      return this.yurume;
+  highlightStyle(yer: Yer) {
+    switch (yer.getHighlight()) {
+      case 0:
+        return '';
+      case 1:
+        return this.gosterge;
+      case 2:
+        return this.yurume;
+      case 3:
+        return this.yeme;
     }
   }
 

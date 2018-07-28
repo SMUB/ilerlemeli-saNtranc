@@ -3,14 +3,14 @@ import { Terrain } from './terrain';
 
 export class Yer {
     private tash: Tash;
-    private highlight: boolean;
-    private _yurumeHighlight: boolean;
+    private highlight: number;
     private terrain: Terrain;
 
     constructor(tash: Tash | null, terrain: Terrain) {
         this.tash = tash;
         this.terrain = terrain;
-        this.highlight = false;
+        // 0 boş, 1 işaretleme, 2 yürüme, 3 yeme
+        this.highlight = 0;
     }
 
     getTash(): Tash {
@@ -29,19 +29,11 @@ export class Yer {
         this.terrain = terrain;
     }
 
-    setHighlight(highlight: boolean) {
+    setHighlight(highlight: number) {
         this.highlight = highlight;
     }
 
-    getHighlight(): boolean {
+    getHighlight(): number {
         return this.highlight;
-    }
-
-    set yurumeHighlight(bool: boolean) {
-        this._yurumeHighlight = bool;
-    }
-
-    get yurumeHighlight(): boolean {
-        return this._yurumeHighlight;
     }
 }
