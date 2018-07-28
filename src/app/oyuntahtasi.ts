@@ -16,8 +16,8 @@ export class OyunTahtasi {
         for (let i = 0; i < x; i++) {
             this.yerler.push(new Array<Yer>());
             for (let j = 0; j < y; j++) {
-                const tash = new Tash('asdfdfdasdfdfas');
-                const terrain = new Terrain('sadffasdfdfga');
+                const tash = new Tash(' ♘ ');
+                const terrain = new Terrain('|__|');
                 this.yerler[i].push(new Yer(tash, terrain));
             }
         }
