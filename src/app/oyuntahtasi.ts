@@ -1,5 +1,5 @@
-import { Yer } from './yer';
-import { Tash, At, AltPiyon, Fil, Kale, Vezir, ÜstPiyon, Şah, Oyuncu } from './tash';
+import { Yer, YerState } from './yer';
+import { Tash, At, AltPiyon, Fil, Kale, Vezir, ÜstPiyon, Şah, Oyuncu, Hamlecinsi } from './tash';
 import { Terrain } from './terrain';
 
 class SeciliYer {
@@ -60,12 +60,24 @@ export class OyunTahtasi {
                     const hedefI = this._seciliyer.i + (hamle.i * k);
                     const hedefJ = this._seciliyer.j + (hamle.j * k);
                     if (hedefI >= 0 && hedefI < this.yerler.length && hedefJ >= 0 && hedefJ < this.yerler[hedefI].length) {
-                        if (this.yerler[hedefI][hedefJ].getTash().oyuncu && this.yerler[hedefI][hedefJ].getTash().oyuncu !== oyuncu) {
-                            this.yerler[hedefI][hedefJ].setHighlight(3);
+                        // TODO şu koşulları yeniden yaz
+                        if (this.yerler[hedefI][hedefJ].getTash().oyuncu
+                            && this.yerler[hedefI][hedefJ].getTash().oyuncu !== oyuncu) {
+                            if (hamle.cins === Hamlecinsi.yeme || hamle.cins === Hamlecinsi.yiyerekyürüme) {
+                                this.yerler[hedefI][hedefJ].setHighlight(YerState.yeme);
+                                break;
+                            } else {
+                                // TODO burada problemeler çıkacak
+                            }
                         } else if (this.yerler[hedefI][hedefJ].getTash().oyuncu === null) {
-                            this.yerler[hedefI][hedefJ].setHighlight(2);
+                            if (hamle.cins === Hamlecinsi.yürüme || hamle.cins === Hamlecinsi.yiyerekyürüme) {
+                                this.yerler[hedefI][hedefJ].setHighlight(YerState.yürüme);
+                            } else {
+                                // TODO burada sırf yeme hareketinin birden fazla tekrar etmesine dair problemeler çıkacak
+                            }
                         } else {
-                            this.yerler[hedefI][hedefJ].setHighlight(0);
+                            this.yerler[hedefI][hedefJ].setHighlight(YerState.boş);
+                            break;
                         }
                     }
                 }
