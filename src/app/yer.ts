@@ -1,16 +1,18 @@
 import { Tash } from './tash';
 import { Terrain } from './terrain';
 
+export enum YerState { boş, işaretleme, yürüme, yeme }
+
 export class Yer {
     private tash: Tash;
-    private highlight: number;
+    private highlight: YerState;
     private terrain: Terrain;
 
     constructor(tash: Tash | null, terrain: Terrain) {
         this.tash = tash;
         this.terrain = terrain;
         // 0 boş, 1 işaretleme, 2 yürüme, 3 yeme
-        this.highlight = 0;
+        this.highlight = YerState.boş;
     }
 
     getTash(): Tash {
@@ -29,11 +31,11 @@ export class Yer {
         this.terrain = terrain;
     }
 
-    setHighlight(highlight: number) {
+    setHighlight(highlight: YerState) {
         this.highlight = highlight;
     }
 
-    getHighlight(): number {
+    getHighlight(): YerState {
         return this.highlight;
     }
 }

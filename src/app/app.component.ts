@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { OyunTahtasi } from './oyuntahtasi';
 import { style } from 'typestyle';
-import { Oyuncu } from './tash';
-import { Yer } from './yer';
+import { Oyuncu, Tash } from './tash';
+import { Yer, YerState } from './yer';
 
 @Component({
   selector: 'app-root',
@@ -42,6 +42,14 @@ export class AppComponent implements OnInit {
       this.oyuntahtasi.secimleriTemizle();
       this.oyuntahtasi.seciliyer = { i: i, j: j };
       this.oyuntahtasi.seciliyerİsaretle(this.oyuncu);
+    } else if (this.oyuntahtasi.yerler[i][j].getHighlight() === YerState.yürüme
+      || this.oyuntahtasi.yerler[i][j].getHighlight() === YerState.yeme) {
+      // eğer getHighlight değeri 2 veya 3 ise zaten bir taş seçlidir bunu varsaydım.
+      const hamleEden = this.oyuntahtasi.yerler[this.oyuntahtasi.seciliyer.i][this.oyuntahtasi.seciliyer.j].getTash();
+      // bu bir hack. Oyuntahtası objesinde çözmek lazım. Bu fonsksiyon null alınca HTMLyi bozmamalı
+      this.oyuntahtasi.yerler[this.oyuntahtasi.seciliyer.i][this.oyuntahtasi.seciliyer.j].setTash(new Tash('', null));
+      this.oyuntahtasi.yerler[i][j].setTash(hamleEden);
+      this.oyuntahtasi.secimleriTemizle();
     }
   }
 
