@@ -4,6 +4,7 @@ import { style } from 'typestyle';
 import { Oyuncu, Tash } from './tash';
 import { Yer, YerState } from './yer';
 
+const TURSAYACILIMIT = 5;
 @Component({
   selector: 'app-root',
   template: `
@@ -30,6 +31,8 @@ export class AppComponent implements OnInit {
 
   oyuncu = Oyuncu.siyah;
 
+  turSayacı = 0;
+
   oyuntahtasi: OyunTahtasi;
 
   ngOnInit() {
@@ -50,6 +53,9 @@ export class AppComponent implements OnInit {
       this.oyuntahtasi.yerler[this.oyuntahtasi.seciliyer.i][this.oyuntahtasi.seciliyer.j].setTash(new Tash('', null));
       this.oyuntahtasi.yerler[i][j].setTash(hamleEden);
       this.oyuntahtasi.secimleriTemizle();
+      if (this.turDöndür()) {
+        this.oyuntahtasi.oyunAlanıYürüt();
+      }
     }
   }
 
@@ -64,5 +70,27 @@ export class AppComponent implements OnInit {
       case 3:
         return this.yeme;
     }
+  }
+
+  // hamleden hamleye oyun kontrolünü oyuncudan oyuncuya aktarır.
+  // belli hamlede bir tur döndürür oyun alanının ilerlemesine karar verir
+  turDöndür(): boolean {
+    if (this.oyuncu === Oyuncu.siyah) {
+      this.oyuncu = Oyuncu.beyaz;
+    } else if (this.oyuncu === Oyuncu.beyaz) {
+      this.oyuncu = Oyuncu.siyah;
+    } else {
+      this.oyuncu = Oyuncu.beyaz;
+    }
+
+    this.turSayacı++;
+
+    if (this.turSayacı > TURSAYACILIMIT) {
+      this.turSayacı = 0;
+      return true;
+    } else {
+      return false;
+    }
+
   }
 }

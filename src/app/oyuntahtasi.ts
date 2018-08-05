@@ -2,6 +2,16 @@ import { Yer, YerState } from './yer';
 import { Tash, At, AltPiyon, Fil, Kale, Vezir, ÜstPiyon, Şah, Oyuncu, Hamlecinsi } from './tash';
 import { Terrain } from './terrain';
 
+const gelenSıraListesi = [
+    { ta: '', te: '|__|' },
+    { ta: ' ♙ ', te: '|__|' },
+    { ta: ' ♖ ', te: '|__|' },
+    { ta: ' ♘ ', te: '|__|' },
+    { ta: ' ♗ ', te: '|__|' },
+    { ta: ' ♕ ', te: '|__|' },
+    { ta: ' ♔ ', te: '|__|' }
+];
+
 class SeciliYer {
     public i: number;
     public j: number;
@@ -83,6 +93,23 @@ export class OyunTahtasi {
                 }
             }
         }
+    }
+
+    oyunAlanıYürüt() {
+        const sıraUzunluğu = this.yerler[0].length;
+        // TODO Bu fonksiyon söktüğün parçayı atamana izin veriyor unutma
+        this.yerler.pop();
+        const yeniSıra = new Array<Yer>();
+        for (let i = 0; i < sıraUzunluğu; i++) {
+            let j = 0;
+            while (Math.random() > 0.5 && j < 7) {
+                j++;
+            }
+            const tash = new Tash(gelenSıraListesi[j].ta, gelenSıraListesi[j].ta === '' ? null : Oyuncu.beyaz);
+            const terrain = new Terrain(gelenSıraListesi[j].te);
+            yeniSıra.push(new Yer(tash, terrain));
+        }
+        this.yerler.unshift(yeniSıra);
     }
 
     secimleriTemizle() {
