@@ -1,15 +1,13 @@
 import { Yer, YerState } from './yer';
-import { Tash, At, AltPiyon, Fil, Kale, Vezir, ÜstPiyon, Şah, Oyuncu, Hamlecinsi } from './tash';
+import { Tash, AltAt, AltFil, AltKale, ÜstFil, ÜstKale, ÜstAt, AltPiyon, ÜstPiyon, Oyuncu, Hamlecinsi } from './tash';
 import { Terrain } from './terrain';
 
 const gelenSıraListesi = [
     { ta: '', te: '|__|' },
-    { ta: ' ♙ ', te: '|__|' },
-    { ta: ' ♖ ', te: '|__|' },
-    { ta: ' ♘ ', te: '|__|' },
-    { ta: ' ♗ ', te: '|__|' },
-    { ta: ' ♕ ', te: '|__|' },
-    { ta: ' ♔ ', te: '|__|' }
+    { ta: './assets/-1.png', te: '|__|' },
+    { ta: './assets/-2.png', te: '|__|' },
+    { ta: './assets/-3.png', te: '|__|' },
+    { ta: './assets/-4.png', te: '|__|' }
 ];
 
 class SeciliYer {
@@ -26,31 +24,23 @@ export class OyunTahtasi {
         for (let i = 0; i < x; i++) {
             this.yerler.push(new Array<Yer>());
             for (let j = 0; j < y; j++) {
-                let tash = new Tash('', null);
+                let tash = null;
                 if (i === 1) {
-                    tash = new ÜstPiyon(' ♙ ', Oyuncu.beyaz);
+                    tash = new ÜstPiyon(Oyuncu.beyaz);
                 } else if (i === 6) {
-                    tash = new AltPiyon(' ♟ ', Oyuncu.siyah);
+                    tash = new AltPiyon(Oyuncu.siyah);
                 } else if (i === 0 && (j === 0 || j === 7)) {
-                    tash = new Kale(' ♖ ', Oyuncu.beyaz);
+                    tash = new ÜstKale(Oyuncu.beyaz);
                 } else if (i === 7 && (j === 0 || j === 7)) {
-                    tash = new Kale(' ♜ ', Oyuncu.siyah);
+                    tash = new AltKale(Oyuncu.siyah);
                 } else if (i === 0 && (j === 1 || j === 6)) {
-                    tash = new At(' ♘ ', Oyuncu.beyaz);
+                    tash = new ÜstAt(Oyuncu.beyaz);
                 } else if (i === 7 && (j === 1 || j === 6)) {
-                    tash = new At(' ♞ ', Oyuncu.siyah);
+                    tash = new AltAt(Oyuncu.siyah);
                 } else if (i === 0 && (j === 2 || j === 5)) {
-                    tash = new Fil(' ♗ ', Oyuncu.beyaz);
+                    tash = new ÜstFil(Oyuncu.beyaz);
                 } else if (i === 7 && (j === 2 || j === 5)) {
-                    tash = new Fil(' ♝ ', Oyuncu.siyah);
-                } else if (i === 0 && j === 3) {
-                    tash = new Vezir(' ♔ ', Oyuncu.beyaz);
-                } else if (i === 7 && j === 3) {
-                    tash = new Şah(' ♛ ', Oyuncu.siyah);
-                } else if (i === 0 && j === 4) {
-                    tash = new Şah(' ♕ ', Oyuncu.beyaz);
-                } else if (i === 7 && j === 4) {
-                    tash = new Vezir(' ♚ ', Oyuncu.siyah);
+                    tash = new AltFil(Oyuncu.siyah);
                 }
                 const terrain = new Terrain('|__|');
                 this.yerler[i].push(new Yer(tash, terrain));
@@ -71,7 +61,7 @@ export class OyunTahtasi {
                     const hedefJ = this._seciliyer.j + (hamle.j * k);
                     if (hedefI >= 0 && hedefI < this.yerler.length && hedefJ >= 0 && hedefJ < this.yerler[hedefI].length) {
                         // TODO şu koşulları yeniden yaz
-                        if (this.yerler[hedefI][hedefJ].getTash().oyuncu
+                        if (this.yerler[hedefI][hedefJ].getTash()
                             && this.yerler[hedefI][hedefJ].getTash().oyuncu !== oyuncu) {
                             if (hamle.cins === Hamlecinsi.yeme || hamle.cins === Hamlecinsi.yiyerekyürüme) {
                                 this.yerler[hedefI][hedefJ].setHighlight(YerState.yeme);
@@ -79,7 +69,7 @@ export class OyunTahtasi {
                             } else {
                                 // TODO burada problemeler çıkacak
                             }
-                        } else if (this.yerler[hedefI][hedefJ].getTash().oyuncu === null) {
+                        } else if (this.yerler[hedefI][hedefJ].getTash() === null) {
                             if (hamle.cins === Hamlecinsi.yürüme || hamle.cins === Hamlecinsi.yiyerekyürüme) {
                                 this.yerler[hedefI][hedefJ].setHighlight(YerState.yürüme);
                             } else {
@@ -102,7 +92,7 @@ export class OyunTahtasi {
         const yeniSıra = new Array<Yer>();
         for (let i = 0; i < sıraUzunluğu; i++) {
             let j = 0;
-            while (Math.random() > 0.5 && j < 7) {
+            while (Math.random() > 0.5 && j < 4) {
                 j++;
             }
             const tash = new Tash(gelenSıraListesi[j].ta, gelenSıraListesi[j].ta === '' ? null : Oyuncu.beyaz);

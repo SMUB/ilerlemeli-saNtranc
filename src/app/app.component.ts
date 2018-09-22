@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OyunTahtasi } from './oyuntahtasi';
 import { style } from 'typestyle';
-import { Oyuncu, Tash } from './tash';
+import { Oyuncu } from './tash';
 import { Yer, YerState } from './yer';
 
 const TURSAYACILIMIT = 5;
@@ -13,7 +13,7 @@ const TURSAYACILIMIT = 5;
       class="col {{highlightStyle(yer)}}"
       (click)="yerTiklama(i,j)">
         <div class="{{icerik}}">{{ yer.getTerrain().getResim() }}</div>
-        <div class="{{icerik}}">{{ yer.getTash().getResim() }}</div>
+        <img *ngIf="yer.getTash()" class="{{icerik}}" [src]='yer.getTash().getResim()'>
       </div>
     </div>
   `,
@@ -35,13 +35,15 @@ export class AppComponent implements OnInit {
 
   oyuntahtasi: OyunTahtasi;
 
+  constructor() { }
+
   ngOnInit() {
     this.oyuntahtasi = new OyunTahtasi(8, 8);
   }
 
   yerTiklama(i, j) {
     // oyuncu yetki kontrolü
-    if (this.oyuntahtasi.yerler[i][j].getTash().oyuncu === this.oyuncu) {
+    if (this.oyuntahtasi.yerler[i][j].getTash() && this.oyuntahtasi.yerler[i][j].getTash().oyuncu === this.oyuncu) {
       this.oyuntahtasi.secimleriTemizle();
       this.oyuntahtasi.seciliyer = { i: i, j: j };
       this.oyuntahtasi.seciliyerİsaretle(this.oyuncu);
@@ -49,8 +51,9 @@ export class AppComponent implements OnInit {
       || this.oyuntahtasi.yerler[i][j].getHighlight() === YerState.yeme) {
       // eğer getHighlight değeri 2 veya 3 ise zaten bir taş seçlidir bunu varsaydım.
       const hamleEden = this.oyuntahtasi.yerler[this.oyuntahtasi.seciliyer.i][this.oyuntahtasi.seciliyer.j].getTash();
-      // bu bir hack. Oyuntahtası objesinde çözmek lazım. Bu fonsksiyon null alınca HTMLyi bozmamalı
-      this.oyuntahtasi.yerler[this.oyuntahtasi.seciliyer.i][this.oyuntahtasi.seciliyer.j].setTash(new Tash('', null));
+      // hamle eden taşı başlangıç noktasında tahtadan kaldır
+      this.oyuntahtasi.yerler[this.oyuntahtasi.seciliyer.i][this.oyuntahtasi.seciliyer.j].setTash(null);
+      // hamle eden taşı bitiş noktasında tahtaya geri yerleştir
       this.oyuntahtasi.yerler[i][j].setTash(hamleEden);
       this.oyuntahtasi.secimleriTemizle();
       if (this.turDöndür()) {

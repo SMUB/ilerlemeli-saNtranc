@@ -4,7 +4,7 @@ import { Terrain } from './terrain';
 export enum YerState { boş, işaretleme, yürüme, yeme }
 
 export class Yer {
-    private tash: Tash;
+    private tash?: Tash;
     private highlight: YerState;
     private terrain: Terrain;
 
@@ -15,7 +15,7 @@ export class Yer {
         this.highlight = YerState.boş;
     }
 
-    getTash(): Tash {
+    getTash(): Tash | null {
         return this.tash;
     }
 
