@@ -1,7 +1,7 @@
 import { Tash } from './tash';
 import { Terrain } from './terrain';
 
-export enum YerState { boş, işaretleme, yürüme, yeme }
+export enum YerState { boş, gosterge, yürüme, yeme }
 
 export class Yer {
     private tash?: Tash;
@@ -11,7 +11,6 @@ export class Yer {
     constructor(tash: Tash | null, terrain: Terrain) {
         this.tash = tash;
         this.terrain = terrain;
-        // 0 boş, 1 işaretleme, 2 yürüme, 3 yeme
         this.highlight = YerState.boş;
     }
 

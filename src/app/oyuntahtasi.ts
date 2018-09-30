@@ -1,23 +1,37 @@
 import { Yer, YerState } from './yer';
-import { Tash, AltAt, AltFil, AltKale, ÜstFil, ÜstKale, ÜstAt, AltPiyon, ÜstPiyon, Oyuncu, Hamlecinsi } from './tash';
+import { Tash, At, Fil, Kale, AltPiyon, ÜstPiyon, Oyuncu, Hamlecinsi } from './tash';
 import { Terrain } from './terrain';
-
-const gelenSıraListesi = [
-    { ta: '', te: '|__|' },
-    { ta: './assets/-1.png', te: '|__|' },
-    { ta: './assets/-2.png', te: '|__|' },
-    { ta: './assets/-3.png', te: '|__|' },
-    { ta: './assets/-4.png', te: '|__|' }
-];
 
 class SeciliYer {
     public i: number;
     public j: number;
 }
 
+const TURSAYACILIMIT = 5;
+
 export class OyunTahtasi {
     public yerler: Yer[][];
     private _seciliyer: SeciliYer;
+    private _oyuncu = Oyuncu.siyah;
+    private _turSayacı = 0;
+
+    // Oyun alanındaki bütün aynı cins taşlar tek bir yere point ettiği için pointer kaybetmemeye özen göster
+    private AltAt = new At(Oyuncu.siyah);
+    private ÜstAt = new At(Oyuncu.beyaz);
+    private AltKale = new Kale(Oyuncu.siyah);
+    private ÜstKale = new Kale(Oyuncu.beyaz);
+    private AltFil = new Fil(Oyuncu.siyah);
+    private ÜstFil = new Fil(Oyuncu.beyaz);
+    private ÜstPiyon = new ÜstPiyon(Oyuncu.beyaz);
+    private AltPiyon = new AltPiyon(Oyuncu.siyah);
+
+    private gelenSıraListesi = [
+        { ta: null, te: '|__|' },
+        { ta: this.ÜstPiyon, te: '|__|' },
+        { ta: this.ÜstKale, te: '|__|' },
+        { ta: this.ÜstAt, te: '|__|' },
+        { ta: this.ÜstFil, te: '|__|' }
+    ];
 
     constructor(x: number, y: number) {
         this.yerler = new Array<Array<Yer>>();
@@ -26,21 +40,21 @@ export class OyunTahtasi {
             for (let j = 0; j < y; j++) {
                 let tash = null;
                 if (i === 1) {
-                    tash = new ÜstPiyon(Oyuncu.beyaz);
+                    tash = this.ÜstPiyon;
                 } else if (i === 6) {
-                    tash = new AltPiyon(Oyuncu.siyah);
+                    tash = this.AltPiyon;
                 } else if (i === 0 && (j === 0 || j === 7)) {
-                    tash = new ÜstKale(Oyuncu.beyaz);
+                    tash = this.ÜstKale;
                 } else if (i === 7 && (j === 0 || j === 7)) {
-                    tash = new AltKale(Oyuncu.siyah);
+                    tash = this.AltKale;
                 } else if (i === 0 && (j === 1 || j === 6)) {
-                    tash = new ÜstAt(Oyuncu.beyaz);
+                    tash = this.ÜstAt;
                 } else if (i === 7 && (j === 1 || j === 6)) {
-                    tash = new AltAt(Oyuncu.siyah);
+                    tash = this.AltAt;
                 } else if (i === 0 && (j === 2 || j === 5)) {
-                    tash = new ÜstFil(Oyuncu.beyaz);
+                    tash = this.ÜstFil;
                 } else if (i === 7 && (j === 2 || j === 5)) {
-                    tash = new AltFil(Oyuncu.siyah);
+                    tash = this.AltFil;
                 }
                 const terrain = new Terrain('|__|');
                 this.yerler[i].push(new Yer(tash, terrain));
@@ -95,8 +109,8 @@ export class OyunTahtasi {
             while (Math.random() > 0.5 && j < 4) {
                 j++;
             }
-            const tash = new Tash(gelenSıraListesi[j].ta, gelenSıraListesi[j].ta === '' ? null : Oyuncu.beyaz);
-            const terrain = new Terrain(gelenSıraListesi[j].te);
+            const tash = this.gelenSıraListesi[j].ta;
+            const terrain = new Terrain(this.gelenSıraListesi[j].te);
             yeniSıra.push(new Yer(tash, terrain));
         }
         this.yerler.unshift(yeniSıra);
@@ -117,5 +131,64 @@ export class OyunTahtasi {
 
     set seciliyer(seciliyer: SeciliYer) {
         this._seciliyer = seciliyer;
+    }
+
+    get oyuncu(): Oyuncu {
+        return this._oyuncu;
+    }
+
+    set oyuncu(oyuncu: Oyuncu) {
+        this._oyuncu = oyuncu;
+    }
+
+    get turSayacı(): number {
+        return this._turSayacı;
+    }
+
+    set turSayacı(turSayacı: number) {
+        this._turSayacı = turSayacı;
+    }
+
+    yerTiklama(i, j) {
+        // oyuncu yetki kontrolü
+        if (this.yerler[i][j].getTash() && this.yerler[i][j].getTash().oyuncu === this.oyuncu) {
+            this.secimleriTemizle();
+            this.seciliyer = { i: i, j: j };
+            this.seciliyerİsaretle(this.oyuncu);
+        } else if (this.yerler[i][j].getHighlight() === YerState.yürüme
+            || this.yerler[i][j].getHighlight() === YerState.yeme) {
+            // eğer getHighlight değeri 2 veya 3 ise zaten bir taş seçlidir bunu varsaydım.
+            const hamleEden = this.yerler[this.seciliyer.i][this.seciliyer.j].getTash();
+            // hamle eden taşı başlangıç noktasında tahtadan kaldır
+            this.yerler[this.seciliyer.i][this.seciliyer.j].setTash(null);
+            // hamle eden taşı bitiş noktasında tahtaya geri yerleştir
+            this.yerler[i][j].setTash(hamleEden);
+            this.secimleriTemizle();
+            if (this.turDöndür()) {
+                this.oyunAlanıYürüt();
+            }
+        }
+    }
+
+    // hamleden hamleye oyun kontrolünü oyuncudan oyuncuya aktarır.
+    // belli hamlede bir tur döndürür oyun alanının ilerlemesine karar verir
+    turDöndür(): boolean {
+        if (this.oyuncu === Oyuncu.siyah) {
+            this.oyuncu = Oyuncu.beyaz;
+        } else if (this.oyuncu === Oyuncu.beyaz) {
+            this.oyuncu = Oyuncu.siyah;
+        } else {
+            this.oyuncu = Oyuncu.beyaz;
+        }
+
+        this.turSayacı++;
+
+        if (this.turSayacı > TURSAYACILIMIT) {
+            this.turSayacı = 0;
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }
