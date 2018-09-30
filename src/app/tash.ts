@@ -1,4 +1,4 @@
-export enum Hamlecinsi { yürüme, yeme, yiyerekyürüme }
+export enum Hamlecinsi { yurume, yeme, yiyerekyurume }
 export enum Oyuncu { siyah, beyaz }
 
 class Hamle {
@@ -8,8 +8,8 @@ class Hamle {
     public tekrar: number;
 }
 
-// TODO farklı cinste taşları alt class olarak tanımla.
-// TODO Taş hareketlerini matematik formül olarak genelle
+// TODO farkli cinste taslari alt class olarak tanimla.
+// TODO Tas hareketlerini matematik formul olarak genelle
 
 export class Tash {
     private resim: string;
@@ -43,14 +43,14 @@ export class At extends Tash {
         super(texture, oyuncu);
 
         this.hamleler = [
-            { i: 2, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: 2, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: -2, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: -2, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: 1, j: 2, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: 1, j: -2, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: -1, j: 2, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: -1, j: -2, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle
+            { i: 2, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: 2, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: -2, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: -2, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: 1, j: 2, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: 1, j: -2, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: -1, j: 2, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: -1, j: -2, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle
         ];
     }
 }
@@ -59,18 +59,18 @@ export class AltPiyon extends Tash {
     constructor(oyuncu: Oyuncu) {
         super('./assets/1.png', oyuncu);
         this.hamleler = [
-            { i: -1, j: 0, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: -1, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: -1, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle
+            { i: -1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: -1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: -1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle
         ];
     }
 }
 
-export class ÜstPiyon extends Tash {
+export class UstPiyon extends Tash {
     constructor(oyuncu: Oyuncu) {
         super('./assets/-1.png', oyuncu);
         this.hamleler = [
-            { i: 1, j: 0, cins: Hamlecinsi.yürüme, tekrar: 1 } as Hamle,
+            { i: 1, j: 0, cins: Hamlecinsi.yurume, tekrar: 1 } as Hamle,
             { i: 1, j: 1, cins: Hamlecinsi.yeme, tekrar: 1 } as Hamle,
             { i: 1, j: -1, cins: Hamlecinsi.yeme, tekrar: 1 } as Hamle
         ];
@@ -89,10 +89,10 @@ export class Fil extends Tash {
 
         super(texture, oyuncu);
         this.hamleler = [
-            { i: 1, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: -1, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: -1, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: 1, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle
+            { i: 1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: -1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: -1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: 1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle
         ];
     }
 }
@@ -109,10 +109,10 @@ export class Kale extends Tash {
 
         super(texture, oyuncu);
         this.hamleler = [
-            { i: 1, j: 0, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: -1, j: 0, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: 0, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: 0, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle
+            { i: 1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: -1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: 0, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: 0, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle
         ];
     }
 }
@@ -121,30 +121,30 @@ export class Vezir extends Tash {
     constructor(resim: string, oyuncu: Oyuncu) {
         super(resim, oyuncu);
         this.hamleler = [
-            { i: 1, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: 1, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: -1, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: -1, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: 1, j: 0, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: -1, j: 0, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: 0, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle,
-            { i: 0, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 8 } as Hamle
+            { i: 1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: 1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: -1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: -1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: 1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: -1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: 0, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
+            { i: 0, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle
         ];
     }
 }
 
-export class Şah extends Tash {
+export class Sah extends Tash {
     constructor(resim: string, oyuncu: Oyuncu) {
         super(resim, oyuncu);
         this.hamleler = [
-            { i: 1, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: 1, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: -1, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: -1, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: 1, j: 0, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: -1, j: 0, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: 0, j: 1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle,
-            { i: 0, j: -1, cins: Hamlecinsi.yiyerekyürüme, tekrar: 1 } as Hamle
+            { i: 1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: 1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: -1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: -1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: 1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: -1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: 0, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
+            { i: 0, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle
         ];
     }
 }
