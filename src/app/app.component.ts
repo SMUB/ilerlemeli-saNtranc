@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OyunTahtasi } from './oyuntahtasi';
 import { style } from 'typestyle';
-import { Oyuncu } from './tash';
+import { Oyuncu } from './tas';
 import { Yer, YerState } from './yer';
 
 @Component({
@@ -34,17 +34,17 @@ export class AppComponent implements OnInit {
   }
 
   yerTiklama(i, j) {
-    // oyuncu yetki kontrolü
+    // oyuncu yetki kontrolu
     this.oyuntahtasi.yerTiklama(i, j);
   }
 
   highlightStyle(yer: Yer) {
     switch (yer.getHighlight()) {
-      case YerState.boş:
+      case YerState.bos:
         return '';
       case YerState.gosterge:
         return this.gosterge;
-      case YerState.yürüme:
+      case YerState.yurume:
         return this.yurume;
       case YerState.yeme:
         return this.yeme;

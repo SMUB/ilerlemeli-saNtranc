@@ -1,5 +1,5 @@
 import { Yer, YerState } from './yer';
-import { Tash, At, Fil, Kale, AltPiyon, ÜstPiyon, Oyuncu, Hamlecinsi } from './tash';
+import { Tas, At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi } from './tas';
 import { Terrain } from './terrain';
 
 class SeciliYer {
@@ -13,24 +13,24 @@ export class OyunTahtasi {
     public yerler: Yer[][];
     private _seciliyer: SeciliYer;
     private _oyuncu = Oyuncu.siyah;
-    private _turSayacı = 0;
+    private _turSayaci = 0;
 
-    // Oyun alanındaki bütün aynı cins taşlar tek bir yere point ettiği için pointer kaybetmemeye özen göster
+    // Oyun alanindaki butun ayni cins taslar tek bir yere point ettigi icin pointer kaybetmemeye ozen goster
     private AltAt = new At(Oyuncu.siyah);
-    private ÜstAt = new At(Oyuncu.beyaz);
+    private UstAt = new At(Oyuncu.beyaz);
     private AltKale = new Kale(Oyuncu.siyah);
-    private ÜstKale = new Kale(Oyuncu.beyaz);
+    private UstKale = new Kale(Oyuncu.beyaz);
     private AltFil = new Fil(Oyuncu.siyah);
-    private ÜstFil = new Fil(Oyuncu.beyaz);
-    private ÜstPiyon = new ÜstPiyon(Oyuncu.beyaz);
+    private UstFil = new Fil(Oyuncu.beyaz);
+    private UstPiyon = new UstPiyon(Oyuncu.beyaz);
     private AltPiyon = new AltPiyon(Oyuncu.siyah);
 
-    private gelenSıraListesi = [
+    private gelenSiraListesi = [
         { ta: null, te: '|__|' },
-        { ta: this.ÜstPiyon, te: '|__|' },
-        { ta: this.ÜstKale, te: '|__|' },
-        { ta: this.ÜstAt, te: '|__|' },
-        { ta: this.ÜstFil, te: '|__|' }
+        { ta: this.UstPiyon, te: '|__|' },
+        { ta: this.UstKale, te: '|__|' },
+        { ta: this.UstAt, te: '|__|' },
+        { ta: this.UstFil, te: '|__|' }
     ];
 
     constructor(x: number, y: number) {
@@ -40,19 +40,19 @@ export class OyunTahtasi {
             for (let j = 0; j < y; j++) {
                 let tash = null;
                 if (i === 1) {
-                    tash = this.ÜstPiyon;
+                    tash = this.UstPiyon;
                 } else if (i === 6) {
                     tash = this.AltPiyon;
                 } else if (i === 0 && (j === 0 || j === 7)) {
-                    tash = this.ÜstKale;
+                    tash = this.UstKale;
                 } else if (i === 7 && (j === 0 || j === 7)) {
                     tash = this.AltKale;
                 } else if (i === 0 && (j === 1 || j === 6)) {
-                    tash = this.ÜstAt;
+                    tash = this.UstAt;
                 } else if (i === 7 && (j === 1 || j === 6)) {
                     tash = this.AltAt;
                 } else if (i === 0 && (j === 2 || j === 5)) {
-                    tash = this.ÜstFil;
+                    tash = this.UstFil;
                 } else if (i === 7 && (j === 2 || j === 5)) {
                     tash = this.AltFil;
                 }
@@ -62,9 +62,9 @@ export class OyunTahtasi {
         }
     }
 
-    seciliyerİsaretle(oyuncu: Oyuncu) {
+    seciliyerIsaretle(oyuncu: Oyuncu) {
         const seciliYer = this.yerler[this._seciliyer.i][this._seciliyer.j];
-        // işaretleme
+        // isaretleme
         seciliYer.setHighlight(1);
         const tash = seciliYer.getTash();
         if (tash) {
@@ -74,23 +74,23 @@ export class OyunTahtasi {
                     const hedefI = this._seciliyer.i + (hamle.i * k);
                     const hedefJ = this._seciliyer.j + (hamle.j * k);
                     if (hedefI >= 0 && hedefI < this.yerler.length && hedefJ >= 0 && hedefJ < this.yerler[hedefI].length) {
-                        // TODO şu koşulları yeniden yaz
+                        // TODO su kosullari yeniden yaz
                         if (this.yerler[hedefI][hedefJ].getTash()
                             && this.yerler[hedefI][hedefJ].getTash().oyuncu !== oyuncu) {
-                            if (hamle.cins === Hamlecinsi.yeme || hamle.cins === Hamlecinsi.yiyerekyürüme) {
+                            if (hamle.cins === Hamlecinsi.yeme || hamle.cins === Hamlecinsi.yiyerekyurume) {
                                 this.yerler[hedefI][hedefJ].setHighlight(YerState.yeme);
                                 break;
                             } else {
-                                // TODO burada problemeler çıkacak
+                                // TODO burada problemeler cikacak
                             }
                         } else if (this.yerler[hedefI][hedefJ].getTash() === null) {
-                            if (hamle.cins === Hamlecinsi.yürüme || hamle.cins === Hamlecinsi.yiyerekyürüme) {
-                                this.yerler[hedefI][hedefJ].setHighlight(YerState.yürüme);
+                            if (hamle.cins === Hamlecinsi.yurume || hamle.cins === Hamlecinsi.yiyerekyurume) {
+                                this.yerler[hedefI][hedefJ].setHighlight(YerState.yurume);
                             } else {
-                                // TODO burada sırf yeme hareketinin birden fazla tekrar etmesine dair problemeler çıkacak
+                                // TODO burada sirf yeme hareketinin birden fazla tekrar etmesine dair problemeler cikacak
                             }
                         } else {
-                            this.yerler[hedefI][hedefJ].setHighlight(YerState.boş);
+                            this.yerler[hedefI][hedefJ].setHighlight(YerState.bos);
                             break;
                         }
                     }
@@ -99,21 +99,21 @@ export class OyunTahtasi {
         }
     }
 
-    oyunAlanıYürüt() {
-        const sıraUzunluğu = this.yerler[0].length;
-        // TODO Bu fonksiyon söktüğün parçayı atamana izin veriyor unutma
+    oyunAlaniYurut() {
+        const siraUzunlugu = this.yerler[0].length;
+        // TODO Bu fonksiyon soktugun parcayi atamana izin veriyor unutma
         this.yerler.pop();
-        const yeniSıra = new Array<Yer>();
-        for (let i = 0; i < sıraUzunluğu; i++) {
+        const yeniSira = new Array<Yer>();
+        for (let i = 0; i < siraUzunlugu; i++) {
             let j = 0;
             while (Math.random() > 0.5 && j < 4) {
                 j++;
             }
-            const tash = this.gelenSıraListesi[j].ta;
-            const terrain = new Terrain(this.gelenSıraListesi[j].te);
-            yeniSıra.push(new Yer(tash, terrain));
+            const tash = this.gelenSiraListesi[j].ta;
+            const terrain = new Terrain(this.gelenSiraListesi[j].te);
+            yeniSira.push(new Yer(tash, terrain));
         }
-        this.yerler.unshift(yeniSıra);
+        this.yerler.unshift(yeniSira);
     }
 
     secimleriTemizle() {
@@ -141,38 +141,38 @@ export class OyunTahtasi {
         this._oyuncu = oyuncu;
     }
 
-    get turSayacı(): number {
-        return this._turSayacı;
+    get turSayaci(): number {
+        return this._turSayaci;
     }
 
-    set turSayacı(turSayacı: number) {
-        this._turSayacı = turSayacı;
+    set turSayaci(turSayaci: number) {
+        this._turSayaci = turSayaci;
     }
 
     yerTiklama(i, j) {
-        // oyuncu yetki kontrolü
+        // oyuncu yetki kontrolu
         if (this.yerler[i][j].getTash() && this.yerler[i][j].getTash().oyuncu === this.oyuncu) {
             this.secimleriTemizle();
             this.seciliyer = { i: i, j: j };
-            this.seciliyerİsaretle(this.oyuncu);
-        } else if (this.yerler[i][j].getHighlight() === YerState.yürüme
+            this.seciliyerIsaretle(this.oyuncu);
+        } else if (this.yerler[i][j].getHighlight() === YerState.yurume
             || this.yerler[i][j].getHighlight() === YerState.yeme) {
-            // eğer getHighlight değeri 2 veya 3 ise zaten bir taş seçlidir bunu varsaydım.
+            // eger getHighlight degeri 2 veya 3 ise zaten bir tas seclidir bunu varsaydim.
             const hamleEden = this.yerler[this.seciliyer.i][this.seciliyer.j].getTash();
-            // hamle eden taşı başlangıç noktasında tahtadan kaldır
+            // hamle eden tasi baslangic noktasinda tahtadan kaldir
             this.yerler[this.seciliyer.i][this.seciliyer.j].setTash(null);
-            // hamle eden taşı bitiş noktasında tahtaya geri yerleştir
+            // hamle eden tasi bitis noktasinda tahtaya geri yerlestir
             this.yerler[i][j].setTash(hamleEden);
             this.secimleriTemizle();
-            if (this.turDöndür()) {
-                this.oyunAlanıYürüt();
+            if (this.turDondur()) {
+                this.oyunAlaniYurut();
             }
         }
     }
 
-    // hamleden hamleye oyun kontrolünü oyuncudan oyuncuya aktarır.
-    // belli hamlede bir tur döndürür oyun alanının ilerlemesine karar verir
-    turDöndür(): boolean {
+    // hamleden hamleye oyun kontrolunu oyuncudan oyuncuya aktarir.
+    // belli hamlede bir tur dondurur oyun alaninin ilerlemesine karar verir
+    turDondur(): boolean {
         if (this.oyuncu === Oyuncu.siyah) {
             this.oyuncu = Oyuncu.beyaz;
         } else if (this.oyuncu === Oyuncu.beyaz) {
@@ -181,10 +181,10 @@ export class OyunTahtasi {
             this.oyuncu = Oyuncu.beyaz;
         }
 
-        this.turSayacı++;
+        this.turSayaci++;
 
-        if (this.turSayacı > TURSAYACILIMIT) {
-            this.turSayacı = 0;
+        if (this.turSayaci > TURSAYACILIMIT) {
+            this.turSayaci = 0;
             return true;
         } else {
             return false;

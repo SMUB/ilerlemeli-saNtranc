@@ -1,24 +1,24 @@
-import { Tash } from './tash';
+import { Tas } from './tas';
 import { Terrain } from './terrain';
 
-export enum YerState { boş, gosterge, yürüme, yeme }
+export enum YerState { bos, gosterge, yurume, yeme }
 
 export class Yer {
-    private tash?: Tash;
+    private tash?: Tas;
     private highlight: YerState;
     private terrain: Terrain;
 
-    constructor(tash: Tash | null, terrain: Terrain) {
+    constructor(tash: Tas | null, terrain: Terrain) {
         this.tash = tash;
         this.terrain = terrain;
-        this.highlight = YerState.boş;
+        this.highlight = YerState.bos;
     }
 
-    getTash(): Tash | null {
+    getTash(): Tas | null {
         return this.tash;
     }
 
-    setTash(tash: Tash | null) {
+    setTash(tash: Tas | null) {
         this.tash = tash;
     }
 
