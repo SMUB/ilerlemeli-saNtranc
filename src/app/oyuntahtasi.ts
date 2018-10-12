@@ -17,7 +17,7 @@ class ReelHamle {
 
 const TURSAYACILIMIT = 2;
 
-// Insan oyuncu siyahtır ve alttan yukari yurur
+// Insan oyuncu siyahtir ve alttan yukari yurur
 export class OyunTahtasi {
     public yerler: Yer[][];
     private _seciliyer: SeciliYer;
@@ -89,7 +89,7 @@ export class OyunTahtasi {
         const reelHamleler = new Array<ReelHamle>();
         if (cikisYeri.getTash()
             && cikisYeri.getTash().oyuncu !== oyuncu) {
-            throw new Error('tas oyuncuya ait degil veya taş yok');
+            throw new Error('tas oyuncuya ait degil veya tas yok');
         }
         const tash = cikisYeri.getTash();
         const potansiyelHamleler = tash.getHamleler();
@@ -102,7 +102,7 @@ export class OyunTahtasi {
                     if (this.yerler[hedefI][hedefJ].getTash()
                         && this.yerler[hedefI][hedefJ].getTash().oyuncu !== oyuncu) {
                         if (hamle.cins === Hamlecinsi.yeme || hamle.cins === Hamlecinsi.yiyerekyurume) {
-                            // TODO kordinatları önce varolan arraylerde ara
+                            // TODO kordinatlari once varolan arraylerde ara
                             reelHamleler.push({
                                 cikisYer: cikisYeri,
                                 hedefI: hedefI,
@@ -180,7 +180,7 @@ export class OyunTahtasi {
         for (const i in this.yerler) {
             for (const j in this.yerler[i]) {
                 if (this.yerler[i][j].getTash() && this.yerler[i][j].getTash().oyuncu === Oyuncu.beyaz) {
-                    // TODO i ve j nin integer olacağı esasen garanti değil
+                    // TODO i ve j nin integer olacagi esasen garanti degil
                     hamleler.push(...this.hedefYerlerIsaretle(this.yerler[i][j], parseInt(i, 10), parseInt(j, 10), Oyuncu.beyaz));
                 }
             }
@@ -246,7 +246,7 @@ export class OyunTahtasi {
             const index = Math.floor(Math.random() * piyonHamleler.length);
             return piyonHamleler[index];
         } else {
-            throw new Error('burda bisey yanlıs gitti');
+            throw new Error('burda bisey yanlis gitti');
         }
 
     }
@@ -281,7 +281,7 @@ export class OyunTahtasi {
         // oyuncu yetki kontrolu
         if (this.yerler[i][j].getTash() && this.yerler[i][j].getTash().oyuncu === Oyuncu.siyah) {
             this.secimleriTemizle();
-            this.seciliyer = { i: i, j: j }; // TODO bunu yoketmenin bi yolunu düsün
+            this.seciliyer = { i: i, j: j }; // TODO bunu yoketmenin bi yolunu dusun
             this.oyuncuHamlesiIsle(this.yerler[i][j], i, j, Oyuncu.siyah);
         } else if (this.yerler[i][j].getHighlight() === YerState.yurume
             || this.yerler[i][j].getHighlight() === YerState.yeme) {
