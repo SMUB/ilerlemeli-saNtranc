@@ -1,5 +1,5 @@
 import { Yer, YerState } from './yer';
-import { Tas, At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi } from './tas';
+import { At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi } from './tas';
 import { Terrain } from './terrain';
 
 class SeciliYer {
@@ -172,11 +172,12 @@ export class OyunTahtasi {
         }
     }
 
-    yapayZeka(): ReelHamle {
+    // When no legal moves are found returns null
+    yapayZeka(): ReelHamle | null {
         // TODO en temizi sahadaki beyaz oyuncu taslarinin listesini tutmak
         const hamleler = new Array<ReelHamle>();
-        const yemeHamleler = new Array<ReelHamle>();
-        const yurumeHamleler = new Array<ReelHamle>();
+        let muadilHamleler: ReelHamle[];
+
         for (const i in this.yerler) {
             for (const j in this.yerler[i]) {
                 if (this.yerler[i][j].getTash() && this.yerler[i][j].getTash().oyuncu === Oyuncu.beyaz) {
@@ -185,70 +186,56 @@ export class OyunTahtasi {
                 }
             }
         }
-        for (const i in hamleler) {
-            if (hamleler[i].hamlecinsi === Hamlecinsi.yeme) {
-                yemeHamleler.push(hamleler[i]);
-            } else if (hamleler[i].hamlecinsi === Hamlecinsi.yurume) {
-                yurumeHamleler.push(hamleler[i]);
-            } else {
-                throw new Error('Hamlecinsi yanlis.');
-            }
+
+        // TODO filter() fonksiyonu bos array mi donduruyor bak
+        let filtreHamleler = hamleler.filter(hamle => hamle.hamlecinsi === Hamlecinsi.yeme);
+
+        // ya yeme hamlesi yoksa
+        if (filtreHamleler.length <= 0) {
+            filtreHamleler = hamleler.filter(hamle => hamle.hamlecinsi === Hamlecinsi.yurume);
         }
-        const piyonHamleler = new Array<ReelHamle>();
-        const kaleHamleler = new Array<ReelHamle>();
-        const atHamleler = new Array<ReelHamle>();
-        const filHamleler = new Array<ReelHamle>();
 
+        // yurume hamlesi varsa
+        if (filtreHamleler.length > 0) {
+            const index = Math.floor(Math.random() * filtreHamleler.length);
+            const nominalI = filtreHamleler[index].hedefI;
+            const nominalJ = filtreHamleler[index].hedefJ;
+            muadilHamleler = filtreHamleler.filter(hamle => hamle.hedefI === nominalI && hamle.hedefJ === nominalJ);
+        }
 
-        if (yemeHamleler.length > 0) {
-            // TODO sunu fonksiyona gom
-            for (const hamle of yemeHamleler) {
-                if (hamle.cikisYer.getTash() instanceof UstPiyon) {
-                    piyonHamleler.push(hamle);
-                } else if (hamle.cikisYer.getTash() instanceof Kale) {
-                    kaleHamleler.push(hamle);
-                } else if (hamle.cikisYer.getTash() instanceof At) {
-                    atHamleler.push(hamle);
-                } else if (hamle.cikisYer.getTash() instanceof Fil) {
-                    filHamleler.push(hamle);
+        return muadilHamleler.reduce(
+            (previousValue, currentValue) => { // callbackfn
+                if (previousValue === null) {
+                    return currentValue;
+                } else if (
+                    (currentValue.cikisYer.getTash() instanceof UstPiyon
+                        && previousValue.cikisYer.getTash() instanceof UstPiyon)
+                    || (currentValue.cikisYer.getTash() instanceof Kale
+                        && previousValue.cikisYer.getTash() instanceof Kale)
+                    || (currentValue.cikisYer.getTash() instanceof At
+                        && previousValue.cikisYer.getTash() instanceof At)
+                    || (currentValue.cikisYer.getTash() instanceof Fil
+                        && previousValue.cikisYer.getTash() instanceof Fil)) {
+                    // When two pieces of equal value target the same coordinates, roll d2 to resolve TODO refactor eventually
+                    return Math.random() > 0.5 ? currentValue : previousValue;
+                } else if (currentValue.cikisYer.getTash() instanceof Kale
+                    && previousValue.cikisYer.getTash() instanceof UstPiyon) {
+                    return currentValue;
+                } else if (currentValue.cikisYer.getTash() instanceof At
+                    && (previousValue.cikisYer.getTash() instanceof Kale
+                        || previousValue.cikisYer.getTash() instanceof UstPiyon)) {
+                    return currentValue;
+                } else if (currentValue.cikisYer.getTash() instanceof Fil
+                    && (previousValue.cikisYer.getTash() instanceof At
+                        || previousValue.cikisYer.getTash() instanceof Kale
+                        || previousValue.cikisYer.getTash() instanceof UstPiyon)) {
+                    return currentValue;
                 } else {
-                    throw new Error('instanceof elegi calismadi');
+                    return previousValue;
                 }
-            }
-        } else if (yurumeHamleler.length > 0) {
-            for (const hamle of yurumeHamleler) {
-                if (hamle.cikisYer.getTash() instanceof UstPiyon) {
-                    piyonHamleler.push(hamle);
-                } else if (hamle.cikisYer.getTash() instanceof Kale) {
-                    kaleHamleler.push(hamle);
-                } else if (hamle.cikisYer.getTash() instanceof At) {
-                    atHamleler.push(hamle);
-                } else if (hamle.cikisYer.getTash() instanceof Fil) {
-                    filHamleler.push(hamle);
-                } else {
-                    throw new Error('instanceof elegi calismadi');
-                }
-            }
-        } else {
-            throw new Error('yapay zeka kilitlendi');
-        }
-
-        if (filHamleler.length > 0) {
-            const index = Math.floor(Math.random() * filHamleler.length);
-            return filHamleler[index];
-        } else if (atHamleler.length > 0) {
-            const index = Math.floor(Math.random() * atHamleler.length);
-            return atHamleler[index];
-        } else if (kaleHamleler.length > 0) {
-            const index = Math.floor(Math.random() * kaleHamleler.length);
-            return kaleHamleler[index];
-        } else if (piyonHamleler.length > 0) {
-            const index = Math.floor(Math.random() * piyonHamleler.length);
-            return piyonHamleler[index];
-        } else {
-            throw new Error('burda bisey yanlis gitti');
-        }
-
+            },
+            null // initialValue
+        );
     }
 
     oyunAlaniYurut() {
@@ -294,8 +281,11 @@ export class OyunTahtasi {
             this.secimleriTemizle();
             // yapay zeka burda hamle eder
             const karsiHamle = this.yapayZeka();
-            this.yerler[karsiHamle.hedefI][karsiHamle.hedefJ].setTash(karsiHamle.cikisYer.getTash());
-            karsiHamle.cikisYer.setTash(null);
+            // AI can return a null value it means AI will pass its turn. Which means player gets to move again on the same board
+            if (karsiHamle) {
+                this.yerler[karsiHamle.hedefI][karsiHamle.hedefJ].setTash(karsiHamle.cikisYer.getTash());
+                karsiHamle.cikisYer.setTash(null);
+            }
 
             if (this.turDondur()) {
                 this.oyunAlaniYurut();
