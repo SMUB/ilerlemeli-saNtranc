@@ -1,22 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { OyunTahtasi } from './oyuntahtasi';
 import { style } from 'typestyle';
-import { Oyuncu } from './tas';
 import { Yer, YerState } from './yer';
 
 @Component({
   selector: 'app-root',
   template: `
-    <div *ngFor="let satir of oyuntahtasi.yerler; let i = index" class="row">
-      <div *ngFor="let yer of satir; let j = index"
-      class="col {{highlightStyle(yer)}}"
-      (click)="yerTiklama(i,j)">
-        <div class="{{icerik}}">{{ yer.getTerrain().getResim() }}</div>
-        <img *ngIf="yer.getTash()" class="{{icerik}}" [src]='yer.getTash().getResim()'>
-      </div>
+    <div class="{{board}}">
+     <div *ngFor="let yer of yerFlatten(); let i = index" class="{{highlightStyle(yer)}}" (click)="yerTiklama(i,j)">       
+          <div class="{{icerik}}">{{ yer.getTerrain().getResim() }}</div>
+         <img *ngIf="yer.getTash()" class="{{icerik}}" [src]='yer.getTash().getResim()'>
+     </div>
     </div>
-  `,
-  styles: ['.row { height: 100px; }']
+  `
 })
 export class AppComponent implements OnInit {
 
@@ -24,6 +20,11 @@ export class AppComponent implements OnInit {
   yurume = style({ outline: 'blue 1px solid' });
   yeme = style({ outline: 'red 1px solid' });
   icerik = style({ position: 'absolute' });
+  board = style({
+    display: 'inline-grid',
+    gridTemplateColumns: '12.5vh 12.5vh 12.5vh 12.5vh 12.5vh 12.5vh 12.5vh 12.5vh',
+    gridTemplateRows: '12.5vh 12.5vh 12.5vh 12.5vh 12.5vh 12.5vh 12.5vh 12.5vh'
+  })
 
   oyuntahtasi: OyunTahtasi;
 
@@ -33,7 +34,19 @@ export class AppComponent implements OnInit {
     this.oyuntahtasi = new OyunTahtasi(8, 8);
   }
 
-  yerTiklama(i, j) {
+  // Grid automagically places its first children in consecutive cells, yer matrix is flattened to an array
+  yerFlatten() {
+    return this.oyuntahtasi.yerler.reduce((a, c) => a.concat(c))
+  }
+
+  // Back calculate matrix position of a piece assuming 8x8 original dimensions see yerFlatten comment
+  yerBuildup(index) {
+    return { i: Math.trunc(index / 8), j: index % 8 }
+  }
+
+  yerTiklama(index) {
+    // game engine understands 2D coordinates, angular loop returns a linear index, see function comment
+    let { i, j } = this.yerBuildup(index);
     // oyuncu yetki kontrolu
     this.oyuntahtasi.yerTiklama(i, j);
   }
