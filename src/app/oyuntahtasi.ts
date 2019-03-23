@@ -1,6 +1,7 @@
 import { Yer, YerState } from './yer';
 import { At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi } from './tas';
 import { Terrain } from './terrain';
+import { PiecesService } from './pieces.service';
 
 class SeciliYer {
     public i: number;
@@ -22,6 +23,7 @@ export class OyunTahtasi {
     public yerler: Yer[][];
     private _seciliyer: SeciliYer;
     private _turSayaci = TURSAYACILIMIT;
+    private piecesService: PiecesService;
 
     // Oyun alanindaki butun ayni cins taslar tek bir yere point ettigi icin pointer kaybetmemeye ozen goster
     private AltAt = new At(Oyuncu.siyah);
@@ -33,37 +35,39 @@ export class OyunTahtasi {
     private UstPiyon = new UstPiyon(Oyuncu.beyaz);
     private AltPiyon = new AltPiyon(Oyuncu.siyah);
 
-    private gelenSiraListesi = [
-        { ta: null, te: '|__|' },
-        { ta: this.UstPiyon, te: '|__|' },
-        { ta: this.UstKale, te: '|__|' },
-        { ta: this.UstAt, te: '|__|' },
-        { ta: this.UstFil, te: '|__|' }
-    ];
+    private pieceChooser(tip) {
+        switch (tip) {
+            case -1:
+                return this.UstPiyon;
+            case 1:
+                return this.AltPiyon;
+            case -2:
+                return this.UstKale;
+            case 2:
+                return this.AltKale;
+            case -3:
+                return this.UstAt;
+            case 3:
+                return this.AltAt;
+            case -4:
+                return this.UstFil;
+            case 4:
+                return this.AltFil;
+            default:
+                return null;
+        }
+    }
 
-    constructor(x: number, y: number) {
+    constructor(piecesService: PiecesService) {
+        this.piecesService = piecesService;
+        let placements = this.piecesService.firstDeployment();
+        let x = placements.length;
+        let y = placements[0].length;
         this.yerler = new Array<Array<Yer>>();
         for (let i = 0; i < x; i++) {
             this.yerler.push(new Array<Yer>());
             for (let j = 0; j < y; j++) {
-                let tash = null;
-                if (i === 1) {
-                    tash = this.UstPiyon;
-                } else if (i === 6) {
-                    tash = this.AltPiyon;
-                } else if (i === 0 && (j === 0 || j === 7)) {
-                    tash = this.UstKale;
-                } else if (i === 7 && (j === 0 || j === 7)) {
-                    tash = this.AltKale;
-                } else if (i === 0 && (j === 1 || j === 6)) {
-                    tash = this.UstAt;
-                } else if (i === 7 && (j === 1 || j === 6)) {
-                    tash = this.AltAt;
-                } else if (i === 0 && (j === 2 || j === 5)) {
-                    tash = this.UstFil;
-                } else if (i === 7 && (j === 2 || j === 5)) {
-                    tash = this.AltFil;
-                }
+                let tash = this.pieceChooser(placements[i][j]);
                 const terrain = new Terrain('|__|');
                 this.yerler[i].push(new Yer(tash, terrain));
             }
@@ -242,14 +246,11 @@ export class OyunTahtasi {
         const siraUzunlugu = this.yerler[0].length;
         // TODO Bu fonksiyon soktugun parcayi atamana izin veriyor unutma
         this.yerler.pop();
+        let nextLine = this.piecesService.getNextLine();
         const yeniSira = new Array<Yer>();
         for (let i = 0; i < siraUzunlugu; i++) {
-            let j = 0;
-            while (Math.random() > 0.5 && j < 4) {
-                j++;
-            }
-            const tash = this.gelenSiraListesi[j].ta;
-            const terrain = new Terrain(this.gelenSiraListesi[j].te);
+            const tash = this.pieceChooser(nextLine[i]);
+            const terrain = new Terrain('|__|');
             yeniSira.push(new Yer(tash, terrain));
         }
         this.yerler.unshift(yeniSira);

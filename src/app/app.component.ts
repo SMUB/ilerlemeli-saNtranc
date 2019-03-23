@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { OyunTahtasi } from './oyuntahtasi';
 import { style } from 'typestyle';
 import { Yer, YerState } from './yer';
+import { PiecesService } from './pieces.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import { Yer, YerState } from './yer';
          <img *ngIf="yer.getTash()" class="{{icerik}}" [src]='yer.getTash().getResim()'>
      </div>
     </div>
-  `
+  `,
+  providers: [PiecesService]
 })
 export class AppComponent implements OnInit {
 
@@ -28,10 +30,12 @@ export class AppComponent implements OnInit {
 
   oyuntahtasi: OyunTahtasi;
 
-  constructor() { }
+  constructor(
+    private piecesService: PiecesService
+  ) { }
 
   ngOnInit() {
-    this.oyuntahtasi = new OyunTahtasi(8, 8);
+    this.oyuntahtasi = new OyunTahtasi(this.piecesService);
   }
 
   // Grid automagically places its first children in consecutive cells, yer matrix is flattened to an array
