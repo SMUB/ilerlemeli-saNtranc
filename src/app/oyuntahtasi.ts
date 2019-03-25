@@ -24,6 +24,7 @@ export class OyunTahtasi {
     private _seciliyer: SeciliYer;
     private _turSayaci = TURSAYACILIMIT;
     private piecesService: PiecesService;
+    private additionalLineCounter = 0;
 
     // Oyun alanindaki butun ayni cins taslar tek bir yere point ettigi icin pointer kaybetmemeye ozen goster
     private AltAt = new At(Oyuncu.siyah);
@@ -68,7 +69,10 @@ export class OyunTahtasi {
             this.yerler.push(new Array<Yer>());
             for (let j = 0; j < y; j++) {
                 let tash = this.pieceChooser(placements[i][j]);
-                const terrain = new Terrain('|__|');
+                //  TODO extract function
+                let holder = './assets/beyazKare.png'
+                if (i % 2 !== j % 2) holder = './assets/siyahKare.png'
+                const terrain = new Terrain(holder);
                 this.yerler[i].push(new Yer(tash, terrain));
             }
         }
@@ -248,9 +252,14 @@ export class OyunTahtasi {
         this.yerler.pop();
         let nextLine = this.piecesService.getNextLine();
         const yeniSira = new Array<Yer>();
+        this.additionalLineCounter++;
         for (let i = 0; i < siraUzunlugu; i++) {
             const tash = this.pieceChooser(nextLine[i]);
-            const terrain = new Terrain('|__|');
+            //  TODO extract function
+            let holder = './assets/beyazKare.png'
+            if (this.additionalLineCounter % 2 !== i % 2) holder = './assets/siyahKare.png'
+            const terrain = new Terrain(holder);
+
             yeniSira.push(new Yer(tash, terrain));
         }
         this.yerler.unshift(yeniSira);
