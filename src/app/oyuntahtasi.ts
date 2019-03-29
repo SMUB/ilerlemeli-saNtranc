@@ -1,7 +1,8 @@
 import { Yer, YerState } from './yer';
-import { At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi } from './tas';
+import { At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi, LootBox } from './tas';
 import { Terrain } from './terrain';
 import { PiecesService } from './pieces.service';
+import { PointService } from './point.service';
 
 class SeciliYer {
     public i: number;
@@ -16,7 +17,7 @@ class ReelHamle {
     public hamlecinsi: Hamlecinsi;
 }
 
-const TURSAYACILIMIT = 2;
+const TURSAYACILIMIT = 3;
 
 // Insan oyuncu siyahtir ve alttan yukari yurur
 export class OyunTahtasi {
@@ -24,6 +25,7 @@ export class OyunTahtasi {
     private _seciliyer: SeciliYer;
     private _turSayaci = TURSAYACILIMIT;
     private piecesService: PiecesService;
+    private pointService: PointService;
     private additionalLineCounter = 0;
 
     // Oyun alanindaki butun ayni cins taslar tek bir yere point ettigi icin pointer kaybetmemeye ozen goster
@@ -35,6 +37,7 @@ export class OyunTahtasi {
     private UstFil = new Fil(Oyuncu.beyaz);
     private UstPiyon = new UstPiyon(Oyuncu.beyaz);
     private AltPiyon = new AltPiyon(Oyuncu.siyah);
+    private LootBox = new LootBox();
 
     private pieceChooser(tip) {
         switch (tip) {
@@ -54,13 +57,16 @@ export class OyunTahtasi {
                 return this.UstFil;
             case 4:
                 return this.AltFil;
+            case -7:
+                return this.LootBox;
             default:
                 return null;
         }
     }
 
-    constructor(piecesService: PiecesService) {
+    constructor(piecesService: PiecesService, pointService: PointService) {
         this.piecesService = piecesService;
+        this.pointService = pointService;
         let placements = this.piecesService.firstDeployment();
         let x = placements.length;
         let y = placements[0].length;
@@ -184,7 +190,7 @@ export class OyunTahtasi {
     yapayZeka(): ReelHamle | null {
         // TODO en temizi sahadaki beyaz oyuncu taslarinin listesini tutmak
         const hamleler = new Array<ReelHamle>();
-        let muadilHamleler: ReelHamle[];
+        let muadilHamleler = new Array<ReelHamle>();
 
         for (const i in this.yerler) {
             for (const j in this.yerler[i]) {
@@ -286,6 +292,11 @@ export class OyunTahtasi {
             const hamleEden = this.yerler[this.seciliyer.i][this.seciliyer.j].getTash();
             // hamle eden tasi baslangic noktasinda tahtadan kaldir
             this.yerler[this.seciliyer.i][this.seciliyer.j].setTash(null);
+            // If the target position has a lootbox notify lootbox service 
+            if (this.yerler[i][j].getTash() !== null && this.yerler[i][j].getTash().getName() === 'LootBox') {
+                // each lootbox is worth 1 point
+                this.pointService.addPoint(1);
+            }
             // hamle eden tasi bitis noktasinda tahtaya geri yerlestir
             this.yerler[i][j].setTash(hamleEden);
             this.secimleriTemizle();
@@ -309,7 +320,8 @@ export class OyunTahtasi {
     // belli hamlede bir tur dondurur oyun alaninin ilerlemesine karar verir
     turDondur(): boolean {
         // surayi elle ayarla
-        if (this.turSayaci-- === 0) {
+        this.turSayaci--;
+        if (this.turSayaci === 0) {
             this.turSayaci = TURSAYACILIMIT;
             return true;
         } else {

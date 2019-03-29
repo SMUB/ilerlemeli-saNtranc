@@ -3,6 +3,7 @@ import { OyunTahtasi } from './oyuntahtasi';
 import { style } from 'typestyle';
 import { Yer, YerState } from './yer';
 import { PiecesService } from './pieces.service';
+import { PointService } from './point.service';
 
 const cellSize = '12vh';
 
@@ -11,6 +12,7 @@ const cellSize = '12vh';
   template: `
     <div class="{{board}}">
       <img class="{{border00}} {{displayInherit}}" src="./assets/00.png" />
+      <div class="{{border00}} {{displayInherit}}">{{pointService.getPoint()}}</div>
       <div class="{{border01}}" >
         <img *ngFor="let yer of borderSize;" class="{{displayInherit}}" src="./assets/01.png" />
       </div>
@@ -32,7 +34,7 @@ const cellSize = '12vh';
       </div>
     </div>
   `,
-  providers: [PiecesService]
+  providers: [PiecesService, PointService]
 })
 export class AppComponent implements OnInit {
 
@@ -61,12 +63,13 @@ export class AppComponent implements OnInit {
   oyuntahtasi: OyunTahtasi;
 
   constructor(
-    private piecesService: PiecesService
+    private piecesService: PiecesService,
+    private pointService: PointService
   ) { }
 
   borderSize = new Array(48);
   ngOnInit() {
-    this.oyuntahtasi = new OyunTahtasi(this.piecesService);
+    this.oyuntahtasi = new OyunTahtasi(this.piecesService, this.pointService);
     this.innerBoardStyles = [];
     for (let i = 0; i < 64; i++) {
       this.innerBoardStyles.push(
