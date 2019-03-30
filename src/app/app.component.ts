@@ -3,7 +3,7 @@ import { OyunTahtasi } from './oyuntahtasi';
 import { style } from 'typestyle';
 import { Yer, YerState } from './yer';
 import { PiecesService } from './pieces.service';
-import { PointService } from './point.service';
+import { LootService } from './point.service';
 
 const cellSize = '12vh';
 
@@ -13,11 +13,11 @@ const cellSize = '12vh';
     <div class="{{board}}">
       <img class="{{leftSidebar0}}" src="./assets/beyazKare.png" />
       <div class="{{leftSidebar0}} {{displayInherit}}">
-        {{pointService.getPoint()}}        
+        {{lootService.getLoot()}}        
       </div>
       <img class="{{rightSidebar0}}" src="./assets/siyahKare.png" />
       <div class="{{rightSidebar0}} {{displayInherit}}">
-        {{pointService.getPoint()}}        
+        {{lootService.getLoot()}}        
       </div>
       <img class="{{border00}} {{displayInherit}}" src="./assets/00.png" />
       <div class="{{border01}}" >
@@ -41,7 +41,7 @@ const cellSize = '12vh';
       </div>
     </div>
   `,
-  providers: [PiecesService, PointService]
+  providers: [PiecesService, LootService]
 })
 export class AppComponent implements OnInit {
 
@@ -73,12 +73,12 @@ export class AppComponent implements OnInit {
 
   constructor(
     private piecesService: PiecesService,
-    private pointService: PointService
+    private lootService: LootService
   ) { }
 
   borderSize = new Array(48);
   ngOnInit() {
-    this.oyuntahtasi = new OyunTahtasi(this.piecesService, this.pointService);
+    this.oyuntahtasi = new OyunTahtasi(this.piecesService, this.lootService);
     this.innerBoardStyles = [];
     for (let i = 0; i < 64; i++) {
       this.innerBoardStyles.push(
