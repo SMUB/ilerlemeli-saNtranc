@@ -11,8 +11,15 @@ const cellSize = '12vh';
   selector: 'app-root',
   template: `
     <div class="{{board}}">
+      <img class="{{leftSidebar0}}" src="./assets/beyazKare.png" />
+      <div class="{{leftSidebar0}} {{displayInherit}}">
+        {{pointService.getPoint()}}        
+      </div>
+      <img class="{{rightSidebar0}}" src="./assets/siyahKare.png" />
+      <div class="{{rightSidebar0}} {{displayInherit}}">
+        {{pointService.getPoint()}}        
+      </div>
       <img class="{{border00}} {{displayInherit}}" src="./assets/00.png" />
-      <div class="{{border00}} {{displayInherit}}">{{pointService.getPoint()}}</div>
       <div class="{{border01}}" >
         <img *ngFor="let yer of borderSize;" class="{{displayInherit}}" src="./assets/01.png" />
       </div>
@@ -45,19 +52,21 @@ export class AppComponent implements OnInit {
   cellStyle = style({ position: 'absolute', width: '12vh', height: '12vh' });
   board = style({
     display: 'inline-grid',
-    gridTemplateColumns: this.cellSizeMulti(),
+    gridTemplateColumns: `12vh ${this.cellSizeMulti()}  12vh`,
     gridTemplateRows: this.cellSizeMulti()
-  })
+  });
   displayBlock = style({ display: 'block', width: '2vh', height: '2vh' });
   displayInherit = style({ width: '2vh', height: '2vh' });
-  border00 = style({ gridRow: '1', gridColumn: '1' })
-  border01 = style({ gridRow: '1', gridColumn: '2', width: '96vh', height: '2vh' })
-  border02 = style({ gridRow: '1', gridColumn: '10', width: '2vh', height: '2vh' })
-  border10 = style({ gridRow: '2', gridColumn: '1', width: '2vh', height: '96vh' })
-  border12 = style({ gridRow: '2', gridColumn: '10', width: '2vh', height: '96vh' })
-  border20 = style({ gridRow: '10', gridColumn: '1', width: '2vh', height: '2vh' })
-  border21 = style({ gridRow: '10', gridColumn: '2', width: '96vh', height: '2vh' })
-  border22 = style({ gridRow: '10', gridColumn: '10', width: '2vh', height: '2vh' })
+  border00 = style({ gridRow: '1', gridColumn: '2' });
+  border01 = style({ gridRow: '1', gridColumn: '3', width: '96vh', height: '2vh' });
+  border02 = style({ gridRow: '1', gridColumn: '11', width: '2vh', height: '2vh' });
+  border10 = style({ gridRow: '2', gridColumn: '2', width: '2vh', height: '96vh' });
+  border12 = style({ gridRow: '2', gridColumn: '11', width: '2vh', height: '96vh' });
+  border20 = style({ gridRow: '10', gridColumn: '2', width: '2vh', height: '2vh' });
+  border21 = style({ gridRow: '10', gridColumn: '3', width: '96vh', height: '2vh' });
+  border22 = style({ gridRow: '10', gridColumn: '11', width: '2vh', height: '2vh' });
+  leftSidebar0 = style({ gridRow: '2', gridColumn: '1' });
+  rightSidebar0 = style({ gridRow: '2', gridColumn: '12' });
 
   innerBoardStyles: String[]
   oyuntahtasi: OyunTahtasi;
@@ -75,7 +84,7 @@ export class AppComponent implements OnInit {
       this.innerBoardStyles.push(
         style(
           {
-            gridColumn: ((i % 8) + 2).toString(),
+            gridColumn: ((i % 8) + 2 + 1).toString(),
             gridRow: (Math.trunc(i / 8) + 2).toString()
           }
         )
