@@ -16,6 +16,9 @@ const cellSize = '12vh';
       <div class="{{leftSidebar0}} {{displayInherit}}">
         {{lootService.getLoot()}}        
       </div>
+      <div class="{{leftSidebar1}} {{displayInherit}}">
+        {{remainingTurns()}}        
+      </div>
       <img class="{{rightSidebar0}}" src="./assets/siyahKare.png" />
       <div class="{{rightSidebar0}} {{displayInherit}}">
         {{pointService.getPoint()}}        
@@ -67,6 +70,7 @@ export class AppComponent implements OnInit {
   border21 = style({ gridRow: '10', gridColumn: '3', width: '96vh', height: '2vh' });
   border22 = style({ gridRow: '10', gridColumn: '11', width: '2vh', height: '2vh' });
   leftSidebar0 = style({ gridRow: '2', gridColumn: '1' });
+  leftSidebar1 = style({ gridRow: '3', gridColumn: '1' });
   rightSidebar0 = style({ gridRow: '2', gridColumn: '12' });
 
   innerBoardStyles: String[]
@@ -112,7 +116,7 @@ export class AppComponent implements OnInit {
     this.oyuntahtasi.yerTiklama(i, j);
   }
 
-  highlightStyle(yer: Yer) {
+  highlightStyle(yer: Yer): string {
     switch (yer.getHighlight()) {
       case YerState.bos:
         return '';
@@ -125,11 +129,15 @@ export class AppComponent implements OnInit {
     }
   }
 
-  cellSizeMulti() {
+  cellSizeMulti(): string {
     let grid = '2vh ';
     for (let i = 0; i < 8; i++) {
       grid += cellSize + ' '
     }
     return grid + '2vh';
+  }
+
+  remainingTurns(): string {
+    return this.oyuntahtasi.turSayaci.toString();
   }
 }
