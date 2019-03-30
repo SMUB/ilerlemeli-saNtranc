@@ -2,7 +2,8 @@ import { Yer, YerState } from './yer';
 import { At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi, LootBox } from './tas';
 import { Terrain } from './terrain';
 import { PiecesService } from './pieces.service';
-import { LootService } from './point.service';
+import { PointService } from './point.service';
+import { LootService } from './loot.service';
 
 class SeciliYer {
     public i: number;
@@ -26,6 +27,7 @@ export class OyunTahtasi {
     private _turSayaci = TURSAYACILIMIT;
     private piecesService: PiecesService;
     private lootService: LootService;
+    private pointService: PointService;
     private additionalLineCounter = 0;
 
     // Oyun alanindaki butun ayni cins taslar tek bir yere point ettigi icin pointer kaybetmemeye ozen goster
@@ -64,9 +66,10 @@ export class OyunTahtasi {
         }
     }
 
-    constructor(piecesService: PiecesService, lootService: LootService) {
+    constructor(piecesService: PiecesService, lootService: LootService, pointService: PointService) {
         this.piecesService = piecesService;
         this.lootService = lootService;
+        this.pointService = pointService;
         let placements = this.piecesService.firstDeployment();
         let x = placements.length;
         let y = placements[0].length;
@@ -293,9 +296,14 @@ export class OyunTahtasi {
             // hamle eden tasi baslangic noktasinda tahtadan kaldir
             this.yerler[this.seciliyer.i][this.seciliyer.j].setTash(null);
             // If the target position has a lootbox notify lootbox service 
-            if (this.yerler[i][j].getTash() !== null && this.yerler[i][j].getTash().getName() === 'LootBox') {
-                // each lootbox is worth 1 point
-                this.lootService.addloot(1);
+            if (this.yerler[i][j].getTash() !== null) {
+                let point = this.yerler[i][j].getTash().getPoint();
+                if (this.yerler[i][j].getTash().getName() === 'LootBox') {
+                    // each lootbox is worth 1 point
+                    this.lootService.addloot(point);
+                } else {
+                    this.pointService.addPoint(point);
+                }
             }
             // hamle eden tasi bitis noktasinda tahtaya geri yerlestir
             this.yerler[i][j].setTash(hamleEden);
