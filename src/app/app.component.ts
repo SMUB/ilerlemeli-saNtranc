@@ -14,14 +14,14 @@ const cellSize = '12vh';
     <div class="{{board}}">
       <img class="{{leftSidebar0}}" src="./assets/beyazKare.png" />
       <div class="{{leftSidebar0}} {{displayInherit}}">
-        {{lootService.getLoot()}}        
+        score: {{pointService.getPoint()}}     
       </div>
       <div class="{{leftSidebar1}} {{displayInherit}}">
-        {{remainingTurns()}}        
+        remainig turns: {{remainingTurns()}}        
       </div>
-      <img class="{{rightSidebar0}}" src="./assets/siyahKare.png" />
+      <img class="{{rightSidebar0}}" src="./assets/beyazKare.png" />
       <div class="{{rightSidebar0}} {{displayInherit}}">
-        {{pointService.getPoint()}}        
+        resources: {{lootService.getLoot()}}   
       </div>
       <img class="{{border00}} {{displayInherit}}" src="./assets/00.png" />
       <div class="{{border01}}" >
@@ -69,9 +69,9 @@ export class AppComponent implements OnInit {
   border20 = style({ gridRow: '10', gridColumn: '2', width: '2vh', height: '2vh' });
   border21 = style({ gridRow: '10', gridColumn: '3', width: '96vh', height: '2vh' });
   border22 = style({ gridRow: '10', gridColumn: '11', width: '2vh', height: '2vh' });
-  leftSidebar0 = style({ gridRow: '2', gridColumn: '1' });
-  leftSidebar1 = style({ gridRow: '3', gridColumn: '1' });
-  rightSidebar0 = style({ gridRow: '2', gridColumn: '12' });
+  leftSidebar0 = style({ gridRow: '2', gridColumn: '1', width: '12vh', height: '12vh' });
+  leftSidebar1 = style({ gridRow: '3', gridColumn: '1', width: '12vh', height: '12vh' });
+  rightSidebar0 = style({ gridRow: '2', gridColumn: '12', width: '12vh', height: '12vh' });
 
   innerBoardStyles: String[]
   oyuntahtasi: OyunTahtasi;
