@@ -89,6 +89,7 @@ export class OyunTahtasi {
 
     oyuncuHamlesiIsle(cikisYeri: Yer, i: number, j: number, oyuncu: Oyuncu) {
         const reelHamleler = this.hedefYerlerIsaretle(cikisYeri, i, j, oyuncu);
+        cikisYeri.setHighlight(YerState.gosterge);
         for (const hamle of reelHamleler) {
             if (hamle.hamlecinsi === Hamlecinsi.yurume) {
                 this.yerler[hamle.hedefI][hamle.hedefJ].setHighlight(YerState.yurume);
@@ -150,43 +151,6 @@ export class OyunTahtasi {
             }
         }
         return reelHamleler;
-    }
-
-    seciliyerIsaretle(oyuncu: Oyuncu) {
-        const seciliYer = this.yerler[this._seciliyer.i][this._seciliyer.j];
-        // isaretleme
-        seciliYer.setHighlight(YerState.gosterge);
-        const tash = seciliYer.getTash();
-        if (tash) {
-            const hamleler = tash.getHamleler();
-            for (const hamle of hamleler) {
-                for (let k = 1; k <= hamle.tekrar; k++) {
-                    const hedefI = this._seciliyer.i + (hamle.i * k);
-                    const hedefJ = this._seciliyer.j + (hamle.j * k);
-                    if (hedefI >= 0 && hedefI < this.yerler.length && hedefJ >= 0 && hedefJ < this.yerler[hedefI].length) {
-                        // TODO su kosullari yeniden yaz
-                        if (this.yerler[hedefI][hedefJ].getTash()
-                            && this.yerler[hedefI][hedefJ].getTash().oyuncu !== oyuncu) {
-                            if (hamle.cins === Hamlecinsi.yeme || hamle.cins === Hamlecinsi.yiyerekyurume) {
-                                this.yerler[hedefI][hedefJ].setHighlight(YerState.yeme);
-                                break;
-                            } else {
-                                // TODO burada problemeler cikacak
-                            }
-                        } else if (this.yerler[hedefI][hedefJ].getTash() === null) {
-                            if (hamle.cins === Hamlecinsi.yurume || hamle.cins === Hamlecinsi.yiyerekyurume) {
-                                this.yerler[hedefI][hedefJ].setHighlight(YerState.yurume);
-                            } else {
-                                // TODO burada sirf yeme hareketinin birden fazla tekrar etmesine dair problemeler cikacak
-                            }
-                        } else {
-                            this.yerler[hedefI][hedefJ].setHighlight(YerState.bos);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     // When no legal moves are found returns null
@@ -278,7 +242,7 @@ export class OyunTahtasi {
         for (const satir of this.yerler) {
             for (const sutun of satir) {
                 // temizle
-                sutun.setHighlight(0);
+                sutun.setHighlight(YerState.bos);
             }
         }
     }

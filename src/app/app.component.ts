@@ -50,7 +50,7 @@ const cellSize = '12vh';
 })
 export class AppComponent implements OnInit {
 
-  gosterge = style({ backgroundColor: 'black', opacity: 100 });
+  gosterge = style({ backgroundColor: 'black', opacity: 1 });
   yurume = style({ backgroundColor: 'blue', opacity: 0.45 });
   yeme = style({ backgroundColor: 'red', opacity: 0.45 });
   icerik = style({ position: 'absolute', width: cellSize, height: cellSize });
