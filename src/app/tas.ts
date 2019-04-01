@@ -15,13 +15,11 @@ export class Tas {
     private resim: string;
     protected hamleler: Hamle[];
     public oyuncu: Oyuncu;
-    private name: string;
     private point: number;
 
-    constructor(resim: string, oyuncu: Oyuncu, name: string, point: number) {
+    constructor(resim: string, oyuncu: Oyuncu, point: number) {
         this.resim = resim;
         this.oyuncu = oyuncu;
-        this.name = name;
         this.point = point;
     }
 
@@ -31,10 +29,6 @@ export class Tas {
 
     getHamleler() {
         return this.hamleler;
-    }
-
-    getName() {
-        return this.name;
     }
 
     getPoint() {
@@ -52,7 +46,7 @@ export class At extends Tas {
             texture = './assets/3.png';
         }
 
-        super(texture, oyuncu, 'At', 1);
+        super(texture, oyuncu, 1);
 
         this.hamleler = [
             { i: 2, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
@@ -69,7 +63,7 @@ export class At extends Tas {
 
 export class AltPiyon extends Tas {
     constructor(oyuncu: Oyuncu) {
-        super('./assets/1.png', oyuncu, 'AltPiyon', 1);
+        super('./assets/1.png', oyuncu, 1);
         this.hamleler = [
             { i: -1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
             { i: -1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
@@ -80,7 +74,7 @@ export class AltPiyon extends Tas {
 
 export class UstPiyon extends Tas {
     constructor(oyuncu: Oyuncu) {
-        super('./assets/-1.png', oyuncu, 'UstPiyon', 1);
+        super('./assets/-1.png', oyuncu, 1);
         this.hamleler = [
             { i: 1, j: 0, cins: Hamlecinsi.yurume, tekrar: 1 } as Hamle,
             { i: 1, j: 1, cins: Hamlecinsi.yeme, tekrar: 1 } as Hamle,
@@ -99,7 +93,7 @@ export class Fil extends Tas {
             texture = './assets/4.png';
         }
 
-        super(texture, oyuncu, 'Fil', 1);
+        super(texture, oyuncu, 1);
         this.hamleler = [
             { i: 1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
             { i: -1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
@@ -119,7 +113,7 @@ export class Kale extends Tas {
             texture = './assets/2.png';
         }
 
-        super(texture, oyuncu, 'Kale', 1);
+        super(texture, oyuncu, 1);
         this.hamleler = [
             { i: 1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
             { i: -1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
@@ -131,7 +125,7 @@ export class Kale extends Tas {
 
 export class Vezir extends Tas {
     constructor(resim: string, oyuncu: Oyuncu) {
-        super(resim, oyuncu, 'Vezir', 1);
+        super(resim, oyuncu, 1);
         this.hamleler = [
             { i: 1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
             { i: 1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
@@ -147,7 +141,7 @@ export class Vezir extends Tas {
 
 export class Sah extends Tas {
     constructor(resim: string, oyuncu: Oyuncu) {
-        super(resim, oyuncu, 'Sah', 1);
+        super(resim, oyuncu, 1);
         this.hamleler = [
             { i: 1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
             { i: 1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
@@ -163,7 +157,7 @@ export class Sah extends Tas {
 
 export class LootBox extends Tas {
     constructor() {
-        super('./assets/-7.png', Oyuncu.beyaz, 'LootBox', 1);
+        super('./assets/-7.png', Oyuncu.beyaz, 1);
         this.hamleler = [];
     }
 }
