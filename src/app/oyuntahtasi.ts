@@ -298,7 +298,7 @@ export class OyunTahtasi {
             // If the target position has a lootbox notify lootbox service 
             if (this.yerler[i][j].getTash() !== null) {
                 let point = this.yerler[i][j].getTash().getPoint();
-                if (this.yerler[i][j].getTash().getName() === 'LootBox') {
+                if (this.yerler[i][j].getTash() instanceof LootBox) {
                     // each lootbox is worth 1 point
                     this.lootService.addloot(point);
                 } else {
