@@ -40,7 +40,8 @@ const cellSize = '12vh';
       </div>
       <img class="{{border22}}" src="./assets/22.png" />
       <div *ngFor="let yer of yerFlatten(); let i = index" class="{{innerBoardStyles[i]}}" (click)="yerTiklama(i)">       
-        <img class="{{cellStyle}} {{highlightStyle(yer)}}" [src]= 'yer.getTerrain().getResim()' />
+        <img class="{{cellStyle}}"  [src]= 'yer.getTerrain().getResim()' />
+        <div class="{{cellStyle}} {{highlightStyle(yer)}}" ></div>
         <img *ngIf="yer.getTash()" class="{{icerik}}" [src]='yer.getTash().getResim()' />
       </div>
     </div>
@@ -49,9 +50,9 @@ const cellSize = '12vh';
 })
 export class AppComponent implements OnInit {
 
-  gosterge = style({ filter: 'brightness(10%)' });
-  yurume = style({ filter: 'brightness(10%)' });
-  yeme = style({ outline: 'red 1px solid' });
+  gosterge = style({ backgroundColor: 'black', opacity: 100 });
+  yurume = style({ backgroundColor: 'blue', opacity: 0.45 });
+  yeme = style({ backgroundColor: 'red', opacity: 0.45 });
   icerik = style({ position: 'absolute', width: cellSize, height: cellSize });
   cellStyle = style({ position: 'absolute', width: '12vh', height: '12vh' });
   board = style({
