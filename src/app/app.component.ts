@@ -16,12 +16,28 @@ const cellSize = '12vh';
       <div class="{{leftSidebar0}} {{displayInherit}}">
         score: {{pointService.getPoint()}}     
       </div>
+      <img class="{{leftSidebar1}}" src="./assets/beyazKare.png" />
       <div class="{{leftSidebar1}} {{displayInherit}}">
         remainig turns: {{remainingTurns()}}        
       </div>
       <img class="{{rightSidebar0}}" src="./assets/beyazKare.png" />
       <div class="{{rightSidebar0}} {{displayInherit}}">
         resources: {{lootService.getLoot()}}   
+      </div>
+      <img class="{{rightSidebar1}}" src="./assets/beyazKare.png" />
+      <img class="{{rightSidebar1}}" src="./assets/2.png" (click)="onClickRook()" />
+      <div class="{{rightSidebar1}} {{displayInherit}}">
+        price: 2 
+      </div>
+      <img class="{{rightSidebar2}}" src="./assets/beyazKare.png" />
+      <img class="{{rightSidebar2}}" src="./assets/3.png" (click)="onClickKnight()" />
+      <div class="{{rightSidebar2}} {{displayInherit}}">
+        price: 3   
+      </div>
+      <img class="{{rightSidebar3}}" src="./assets/beyazKare.png" />
+      <img class="{{rightSidebar3}}" src="./assets/4.png" (click)="onClickBishop()" />
+      <div class="{{rightSidebar3}} {{displayInherit}}">
+        price: 4   
       </div>
       <img class="{{border00}} {{displayInherit}}" src="./assets/00.png" />
       <div class="{{border01}}" >
@@ -73,6 +89,9 @@ export class AppComponent implements OnInit {
   leftSidebar0 = style({ gridRow: '2', gridColumn: '1', width: '12vh', height: '12vh' });
   leftSidebar1 = style({ gridRow: '3', gridColumn: '1', width: '12vh', height: '12vh' });
   rightSidebar0 = style({ gridRow: '2', gridColumn: '12', width: '12vh', height: '12vh' });
+  rightSidebar1 = style({ gridRow: '3', gridColumn: '12', width: '12vh', height: '12vh' });
+  rightSidebar2 = style({ gridRow: '4', gridColumn: '12', width: '12vh', height: '12vh' });
+  rightSidebar3 = style({ gridRow: '5', gridColumn: '12', width: '12vh', height: '12vh' });
 
   innerBoardStyles: String[]
   oyuntahtasi: OyunTahtasi;
@@ -141,4 +160,18 @@ export class AppComponent implements OnInit {
   remainingTurns(): string {
     return this.oyuntahtasi.turSayaci.toString();
   }
+
+  onClickRook() {
+    this.oyuntahtasi.buyModeRook();
+  }
+
+  onClickKnight() {
+    this.oyuntahtasi.buyModeKnight();
+  }
+
+  onClickBishop() {
+    this.oyuntahtasi.buyModeBishop();
+  }
+
+
 }

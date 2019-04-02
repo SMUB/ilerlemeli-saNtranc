@@ -1,5 +1,5 @@
 import { Yer, YerState } from './yer';
-import { At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi, LootBox } from './tas';
+import { At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi, LootBox, Tas } from './tas';
 import { Terrain } from './terrain';
 import { PiecesService } from './pieces.service';
 import { PointService } from './point.service';
@@ -29,6 +29,7 @@ export class OyunTahtasi {
     private lootService: LootService;
     private pointService: PointService;
     private additionalLineCounter = 0;
+    private pieceToBuy: Tas = null;
 
     // Oyun alanindaki butun ayni cins taslar tek bir yere point ettigi icin pointer kaybetmemeye ozen goster
     private AltAt = new At(Oyuncu.siyah);
@@ -248,11 +249,19 @@ export class OyunTahtasi {
     }
 
     yerTiklama(i, j) {
-        // oyuncu yetki kontrolu
-        if (this.yerler[i][j].getTash() && this.yerler[i][j].getTash().oyuncu === Oyuncu.siyah) {
+
+        if (this.yerler[i][j].getTash() && this.yerler[i][j].getTash().oyuncu === Oyuncu.siyah) { // When human player clicks on one of their own pieces
             this.secimleriTemizle();
             this.seciliyer = { i: i, j: j }; // TODO bunu yoketmenin bi yolunu dusun
             this.oyuncuHamlesiIsle(this.yerler[i][j], i, j, Oyuncu.siyah);
+        } else if (this.pieceToBuy !== null && !this.yerler[i][j].getTash()) { // When human player is in a buy mode and clicks an empty position
+            if (this.lootService.deductLoot(this.pieceToBuy.getPoint())) { // Try to deduct cost of piece from total loot, if successfull place piece
+                this.yerler[i][j].setTash(this.pieceToBuy); // set piece pointer form piece to be bought, effectively makng a new image
+                
+            } else { // if buying fails
+//todo
+            }
+            this.pieceToBuy = null; // exit buy mode
         } else if (this.yerler[i][j].getHighlight() === YerState.yurume
             || this.yerler[i][j].getHighlight() === YerState.yeme) {
             // eger getHighlight degeri 2 veya 3 ise zaten bir tas seclidir bunu varsaydim.
@@ -316,4 +325,9 @@ export class OyunTahtasi {
     set turSayaci(turSayaci: number) {
         this._turSayaci = turSayaci;
     }
+
+    buyModeBishop() { this.pieceToBuy = this.AltFil; }
+    buyModeKnight() { this.pieceToBuy = this.AltAt; }
+    buyModeRook() { this.pieceToBuy = this.AltKale; }
+    buyModeOff() { this.pieceToBuy = null; }
 }

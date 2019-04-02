@@ -46,7 +46,7 @@ export class At extends Tas {
             texture = './assets/3.png';
         }
 
-        super(texture, oyuncu, 1);
+        super(texture, oyuncu, 3);
 
         this.hamleler = [
             { i: 2, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 1 } as Hamle,
@@ -93,7 +93,7 @@ export class Fil extends Tas {
             texture = './assets/4.png';
         }
 
-        super(texture, oyuncu, 1);
+        super(texture, oyuncu, 4);
         this.hamleler = [
             { i: 1, j: 1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
             { i: -1, j: -1, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
@@ -113,7 +113,7 @@ export class Kale extends Tas {
             texture = './assets/2.png';
         }
 
-        super(texture, oyuncu, 1);
+        super(texture, oyuncu, 2);
         this.hamleler = [
             { i: 1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
             { i: -1, j: 0, cins: Hamlecinsi.yiyerekyurume, tekrar: 8 } as Hamle,
