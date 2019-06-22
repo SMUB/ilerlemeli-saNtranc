@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Yer, YerState } from './yer';
 import { At, Fil, Kale, AltPiyon, UstPiyon, Oyuncu, Hamlecinsi, LootBox, Tas } from './tas';
 import { Terrain } from './terrain';
@@ -20,14 +21,14 @@ class ReelHamle {
 
 const TURSAYACILIMIT = 3;
 
+@Injectable({
+    providedIn: 'root',
+})
 // Insan oyuncu siyahtir ve alttan yukari yurur
 export class OyunTahtasi {
     public yerler: Yer[][];
     private _seciliyer: SeciliYer;
     private _turSayaci = TURSAYACILIMIT;
-    private piecesService: PiecesService;
-    private lootService: LootService;
-    private pointService: PointService;
     private additionalLineCounter = 0;
     private pieceToBuy: Tas = null;
 
@@ -67,21 +68,24 @@ export class OyunTahtasi {
         }
     }
 
-    constructor(piecesService: PiecesService, lootService: LootService, pointService: PointService) {
-        this.piecesService = piecesService;
-        this.lootService = lootService;
-        this.pointService = pointService;
-        let placements = this.piecesService.firstDeployment();
-        let x = placements.length;
-        let y = placements[0].length;
+    constructor(private piecesService: PiecesService,
+        private lootService: LootService,
+        private pointService: PointService) {
+        this.deploy();
+    }
+
+    deploy() {
+        const placements = this.piecesService.firstDeployment();
+        const x = placements.length;
+        const y = placements[0].length;
         this.yerler = new Array<Array<Yer>>();
         for (let i = 0; i < x; i++) {
             this.yerler.push(new Array<Yer>());
             for (let j = 0; j < y; j++) {
-                let tash = this.pieceChooser(placements[i][j]);
+                const tash = this.pieceChooser(placements[i][j]);
                 //  TODO extract function
-                let holder = './assets/beyazKare.png'
-                if (i % 2 !== j % 2) holder = './assets/siyahKare.png'
+                let holder = './assets/beyazKare.png';
+                if (i % 2 !== j % 2) { holder = './assets/siyahKare.png'; }
                 const terrain = new Terrain(holder);
                 this.yerler[i].push(new Yer(tash, terrain));
             }
@@ -224,14 +228,14 @@ export class OyunTahtasi {
         const siraUzunlugu = this.yerler[0].length;
         // TODO Bu fonksiyon soktugun parcayi atamana izin veriyor unutma
         this.yerler.pop();
-        let nextLine = this.piecesService.getNextLine();
+        const nextLine = this.piecesService.getNextLine();
         const yeniSira = new Array<Yer>();
         this.additionalLineCounter++;
         for (let i = 0; i < siraUzunlugu; i++) {
             const tash = this.pieceChooser(nextLine[i]);
             //  TODO extract function
-            let holder = './assets/beyazKare.png'
-            if (this.additionalLineCounter % 2 !== i % 2) holder = './assets/siyahKare.png'
+            let holder = './assets/beyazKare.png';
+            if (this.additionalLineCounter % 2 !== i % 2) { holder = './assets/siyahKare.png'; }
             const terrain = new Terrain(holder);
 
             yeniSira.push(new Yer(tash, terrain));
@@ -250,16 +254,19 @@ export class OyunTahtasi {
 
     yerTiklama(i, j) {
 
-        if (this.yerler[i][j].getTash() && this.yerler[i][j].getTash().oyuncu === Oyuncu.siyah) { // When human player clicks on one of their own pieces
+        if (this.yerler[i][j].getTash()
+            && this.yerler[i][j].getTash().oyuncu === Oyuncu.siyah) { // When human player clicks on one of their own pieces
             this.secimleriTemizle();
             this.seciliyer = { i: i, j: j }; // TODO bunu yoketmenin bi yolunu dusun
             this.oyuncuHamlesiIsle(this.yerler[i][j], i, j, Oyuncu.siyah);
-        } else if (this.pieceToBuy !== null && !this.yerler[i][j].getTash()) { // When human player is in a buy mode and clicks an empty position
-            if (this.lootService.deductLoot(this.pieceToBuy.getPoint())) { // Try to deduct cost of piece from total loot, if successfull place piece
+        } else if (this.pieceToBuy !== null &&
+            !this.yerler[i][j].getTash()) { // When human player is in a buy mode and clicks an empty position
+            if (this.lootService.deductLoot(
+                this.pieceToBuy.getPoint())) { // Try to deduct cost of piece from total loot, if successfull place piece
                 this.yerler[i][j].setTash(this.pieceToBuy); // set piece pointer form piece to be bought, effectively makng a new image
-                
+
             } else { // if buying fails
-//todo
+                // todo
             }
             this.pieceToBuy = null; // exit buy mode
         } else if (this.yerler[i][j].getHighlight() === YerState.yurume
@@ -268,9 +275,9 @@ export class OyunTahtasi {
             const hamleEden = this.yerler[this.seciliyer.i][this.seciliyer.j].getTash();
             // hamle eden tasi baslangic noktasinda tahtadan kaldir
             this.yerler[this.seciliyer.i][this.seciliyer.j].setTash(null);
-            // If the target position has a lootbox notify lootbox service 
+            // If the target position has a lootbox notify lootbox service
             if (this.yerler[i][j].getTash() !== null) {
-                let point = this.yerler[i][j].getTash().getPoint();
+                const point = this.yerler[i][j].getTash().getPoint();
                 if (this.yerler[i][j].getTash() instanceof LootBox) {
                     // each lootbox is worth 1 point
                     this.lootService.addloot(point);

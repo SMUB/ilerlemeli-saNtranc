@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OyunTahtasi } from './oyuntahtasi';
+import { OyunTahtasi } from './oyuntahtasi.service';
 import { style } from 'typestyle';
 import { Yer, YerState } from './yer';
 import { PiecesService } from './pieces.service';
@@ -11,33 +11,33 @@ const cellSize = '12vh';
 @Component({
   selector: 'app-root',
   template: `
-    <div class="{{board}}">
+    <div id="board" class="{{board}}">
       <img class="{{leftSidebar0}}" src="./assets/beyazKare.png" />
-      <div class="{{leftSidebar0}} {{displayInherit}}">
-        score: {{pointService.getPoint()}}     
+      <div id="point" class="{{leftSidebar0}} {{displayInherit}}">
+        score: {{pointService.getPoint()}}
       </div>
       <img class="{{leftSidebar1}}" src="./assets/beyazKare.png" />
       <div class="{{leftSidebar1}} {{displayInherit}}">
-        remainig turns: {{remainingTurns()}}        
+        remainig turns: {{remainingTurns()}}
       </div>
       <img class="{{rightSidebar0}}" src="./assets/beyazKare.png" />
       <div class="{{rightSidebar0}} {{displayInherit}}">
-        resources: {{lootService.getLoot()}}   
+        resources: {{lootService.getLoot()}}
       </div>
       <img class="{{rightSidebar1}}" src="./assets/beyazKare.png" />
       <img class="{{rightSidebar1}}" src="./assets/2.png" (click)="onClickRook()" />
       <div class="{{rightSidebar1}} {{displayInherit}}">
-        price: 2 
+        price: 2
       </div>
       <img class="{{rightSidebar2}}" src="./assets/beyazKare.png" />
       <img class="{{rightSidebar2}}" src="./assets/3.png" (click)="onClickKnight()" />
       <div class="{{rightSidebar2}} {{displayInherit}}">
-        price: 3   
+        price: 3
       </div>
       <img class="{{rightSidebar3}}" src="./assets/beyazKare.png" />
       <img class="{{rightSidebar3}}" src="./assets/4.png" (click)="onClickBishop()" />
       <div class="{{rightSidebar3}} {{displayInherit}}">
-        price: 4   
+        price: 4
       </div>
       <img class="{{border00}} {{displayInherit}}" src="./assets/00.png" />
       <div class="{{border01}}" >
@@ -55,14 +55,14 @@ const cellSize = '12vh';
         <img *ngFor="let yer of borderSize;" class="{{displayInherit}}" src="./assets/21.png" />
       </div>
       <img class="{{border22}}" src="./assets/22.png" />
-      <div *ngFor="let yer of yerFlatten(); let i = index" class="{{innerBoardStyles[i]}}" (click)="yerTiklama(i)">       
+      <div *ngFor="let yer of yerFlatten(); let i = index" id="{{'C'+i}}" class="{{innerBoardStyles[i]}}" (click)="yerTiklama(i)">
         <img class="{{cellStyle}}"  [src]= 'yer.getTerrain().getResim()' />
-        <div class="{{cellStyle}} {{highlightStyle(yer)}}" ></div>
-        <img *ngIf="yer.getTash()" class="{{icerik}}" [src]='yer.getTash().getResim()' />
+        <div class="{{cellStyle}}{{highlightStyle(yer)}}" ></div>
+        <img *ngIf="yer.getTash()" class="piece {{icerik}}" [src]='yer.getTash().getResim()' />
       </div>
     </div>
   `,
-  providers: [PiecesService, LootService]
+  providers: [/*PiecesService, LootService, OyunTahtasi*/]
 })
 export class AppComponent implements OnInit {
 
@@ -93,18 +93,17 @@ export class AppComponent implements OnInit {
   rightSidebar2 = style({ gridRow: '4', gridColumn: '12', width: '12vh', height: '12vh' });
   rightSidebar3 = style({ gridRow: '5', gridColumn: '12', width: '12vh', height: '12vh' });
 
-  innerBoardStyles: String[]
-  oyuntahtasi: OyunTahtasi;
+  innerBoardStyles: String[];
 
   constructor(
-    private piecesService: PiecesService,
     private lootService: LootService,
-    private pointService: PointService
+    private pointService: PointService,
+    public oyuntahtasi: OyunTahtasi
   ) { }
 
   borderSize = new Array(48);
   ngOnInit() {
-    this.oyuntahtasi = new OyunTahtasi(this.piecesService, this.lootService, this.pointService);
+    // this.oyuntahtasi = new OyunTahtasi(this.piecesService, this.lootService, this.pointService);
     this.innerBoardStyles = [];
     for (let i = 0; i < 64; i++) {
       this.innerBoardStyles.push(
@@ -120,18 +119,18 @@ export class AppComponent implements OnInit {
 
   // Grid automagically places its first children in consecutive cells, yer matrix is flattened to an array
   yerFlatten() {
-    return this.oyuntahtasi.yerler.reduce((a, c) => a.concat(c))
+    return this.oyuntahtasi.yerler.reduce((a, c) => a.concat(c));
   }
 
   // Back calculate matrix position of a piece assuming 8x8 original dimensions see yerFlatten comment
   yerBuildup(index) {
-    return { i: Math.trunc(index / 8), j: index % 8 }
+    return { i: Math.trunc(index / 8), j: index % 8 };
   }
 
   yerTiklama(index) {
     // game engine understands 2D coordinates, angular loop returns a linear index, see function comment
-    let { i, j } = this.yerBuildup(index);
-    console.log(i, j);
+    const { i, j } = this.yerBuildup(index);
+    // console.log(i, j);
     // oyuncu yetki kontrolu
     this.oyuntahtasi.yerTiklama(i, j);
   }
@@ -141,18 +140,18 @@ export class AppComponent implements OnInit {
       case YerState.bos:
         return '';
       case YerState.gosterge:
-        return this.gosterge;
+        return ' ' + this.gosterge;
       case YerState.yurume:
-        return this.yurume;
+        return ' ' + this.yurume;
       case YerState.yeme:
-        return this.yeme;
+        return ' ' + this.yeme;
     }
   }
 
   cellSizeMulti(): string {
     let grid = '2vh ';
     for (let i = 0; i < 8; i++) {
-      grid += cellSize + ' '
+      grid += cellSize + ' ';
     }
     return grid + '2vh';
   }
