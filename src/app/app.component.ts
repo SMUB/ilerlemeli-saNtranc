@@ -12,7 +12,7 @@ import {
   animate,
   transition,
   keyframes,
-  // ...
+  AnimationMetadata
 } from '@angular/animations';
 
 const cellSize = '12vh';
@@ -64,7 +64,7 @@ const cellSize = '12vh';
         <img *ngFor="let yer of borderSize;" class="{{displayInherit}}" src="./assets/21.png" />
       </div>
       <img class="{{border22}}" src="./assets/22.png" />
-      <div *ngFor="let yer of yerFlatten(); let i = index" id="{{'C'+i}}" class="cell {{innerBoardStyles[i]}}" (click)="yerTiklama(i)">
+      <div [@boardmove]="i" *ngFor="let yer of yerFlatten(); let i = index" id="{{'C'+i}}" class="cell" (click)="yerTiklama(i)">
         <img class="{{cellStyle}}"  [src]= 'yer.getTerrain().getResim()' />
         <div class="{{cellStyle}}{{highlightStyle(yer)}}" ></div>
         <img @pieceMoveFade *ngIf="yer.getTash()" class="piece {{icerik}}" [src]='yer.getTash().getResim()' />
@@ -108,6 +108,31 @@ const cellSize = '12vh';
       ]),
       transition(':leave', [
         animate('1s', style({ opacity: 0 }))
+      ])
+    ]),
+    trigger('boardmove', [
+      ...(
+        () => {
+          let stateArr = new Array<AnimationMetadata>();
+          for (let i = 0; i < 64; i++) {
+            stateArr.push(
+              state(i.toString(),
+                style({
+                  gridColumn: ((i % 8) + 2 + 1).toString(),
+                  gridRow: (Math.trunc(i / 8) + 2).toString()
+                })
+              )
+            );
+          }
+          return stateArr;
+        }
+      )(),
+      transition('* => *', [
+        animate('3s', keyframes([
+          style({ offset: 0.0 }),
+          style({ offset: 0.8 }),
+          style({ offset: 1 })
+        ])),
       ])
     ])
   ]
