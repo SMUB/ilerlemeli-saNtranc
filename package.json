@@ -21,7 +21,7 @@
     "@angular/platform-browser-dynamic": "^7.2.10",
     "@angular/router": "^7.2.10",
     "core-js": "^2.5.4",
-    "rxjs": "^6.4.0",
+    "rxjs": "^6.5.2",
     "tslib": "^1.9.0",
     "typestyle": "^2.0.1",
     "zone.js": "^0.8.29"
