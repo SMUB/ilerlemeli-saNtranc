@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { OyunTahtasi } from './oyuntahtasi.service';
 import { style as style2 } from 'typestyle';
 import { Yer, YerState } from './yer';
@@ -127,6 +127,12 @@ const cellSize = '12vh';
           return stateArr;
         }
       )(),
+      transition(':enter', [
+        animate('3s'),
+      ]),
+      transition(':leave', [
+        animate('5s'),
+      ]),
       transition('* => *', [
         animate('3s', keyframes([
           style({ offset: 0.0 }),
@@ -137,7 +143,7 @@ const cellSize = '12vh';
     ])
   ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
   gosterge = style2({ backgroundColor: 'black', opacity: 1 });
   yurume = style2({ backgroundColor: 'blue', opacity: 0.45 });
@@ -176,21 +182,6 @@ export class AppComponent implements OnInit {
   ) { }
 
   borderSize = new Array(48);
-  ngOnInit() {
-    // this.oyuntahtasi = new OyunTahtasi(this.piecesService, this.lootService, this.pointService);
-    this.innerBoardStyles = [];
-    for (let i = 0; i < 64; i++) {
-      this.innerBoardStyles.push(
-        style2(
-          {
-            gridColumn: ((i % 8) + 2 + 1).toString(),
-            gridRow: (Math.trunc(i / 8) + 2).toString()
-          }
-        )
-      );
-    }
-  }
-
   // Grid automagically places its first children in consecutive cells, yer matrix is flattened to an array
   yerFlatten() {
     return this.oyuntahtasi.yerler.reduce((a, c) => a.concat(c));
