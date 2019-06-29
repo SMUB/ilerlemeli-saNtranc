@@ -1,10 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { OyunTahtasi } from './oyuntahtasi.service';
-import { style } from 'typestyle';
+import { style as style2 } from 'typestyle';
 import { Yer, YerState } from './yer';
 import { PiecesService } from './pieces.service';
 import { PointService } from './point.service';
 import { LootService } from './loot.service';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+  keyframes,
+  // ...
+} from '@angular/animations';
 
 const cellSize = '12vh';
 
@@ -55,44 +64,84 @@ const cellSize = '12vh';
         <img *ngFor="let yer of borderSize;" class="{{displayInherit}}" src="./assets/21.png" />
       </div>
       <img class="{{border22}}" src="./assets/22.png" />
-      <div *ngFor="let yer of yerFlatten(); let i = index" id="{{'C'+i}}" class="{{innerBoardStyles[i]}}" (click)="yerTiklama(i)">
+      <div *ngFor="let yer of yerFlatten(); let i = index" id="{{'C'+i}}" class="cell {{innerBoardStyles[i]}}" (click)="yerTiklama(i)">
         <img class="{{cellStyle}}"  [src]= 'yer.getTerrain().getResim()' />
         <div class="{{cellStyle}}{{highlightStyle(yer)}}" ></div>
-        <img *ngIf="yer.getTash()" class="piece {{icerik}}" [src]='yer.getTash().getResim()' />
+        <img @pieceMoveFade *ngIf="yer.getTash()" class="piece {{icerik}}" [src]='yer.getTash().getResim()' />
       </div>
-    </div>
+      <div class="{{counterBar}}">
+        <img [@grab]="remainingTurns()" class="{{hands3}}"  src="./assets/prototip2countdown-graphic.png" />
+      </div>
+    </div>,
+    
   `,
-  providers: [/*PiecesService, LootService, OyunTahtasi*/]
+  providers: [/*PiecesService, LootService, OyunTahtasi*/],
+  animations: [
+    trigger('grab', [
+      state('3', style({
+        bottom: '0vh'
+      })),
+      state('2', style({
+        bottom: '4vh'
+      })),
+      state('1', style({
+        bottom: '8vh'
+      })),
+      transition('3 => 2', [
+        animate('1s')
+      ]),
+      transition('2 => 1', [
+        animate('1s')
+      ]),
+      transition('1 => 3', [
+        animate('3s', keyframes([
+          style({ bottom: '8vh', offset: 0.0 }),
+          style({ bottom: '15vh', offset: 0.8 }),
+          style({ bottom: '0vh', offset: 1 })
+        ]))
+      ]),
+    ]),
+    trigger('pieceMoveFade', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('1s', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('1s', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class AppComponent implements OnInit {
 
-  gosterge = style({ backgroundColor: 'black', opacity: 1 });
-  yurume = style({ backgroundColor: 'blue', opacity: 0.45 });
-  yeme = style({ backgroundColor: 'red', opacity: 0.45 });
-  icerik = style({ position: 'absolute', width: cellSize, height: cellSize });
-  cellStyle = style({ position: 'absolute', width: '12vh', height: '12vh' });
-  board = style({
+  gosterge = style2({ backgroundColor: 'black', opacity: 1 });
+  yurume = style2({ backgroundColor: 'blue', opacity: 0.45 });
+  yeme = style2({ backgroundColor: 'red', opacity: 0.45 });
+  icerik = style2({ position: 'absolute', width: cellSize, height: cellSize });
+  cellStyle = style2({ position: 'absolute', width: '12vh', height: '12vh' });
+  board = style2({
     display: 'inline-grid',
     gridTemplateColumns: `12vh ${this.cellSizeMulti()}  12vh`,
-    gridTemplateRows: this.cellSizeMulti()
+    gridTemplateRows: `${this.cellSizeMulti()} 12vh`
   });
-  displayBlock = style({ display: 'block', width: '2vh', height: '2vh' });
-  displayInherit = style({ width: '2vh', height: '2vh' });
-  border00 = style({ gridRow: '1', gridColumn: '2' });
-  border01 = style({ gridRow: '1', gridColumn: '3', width: '96vh', height: '2vh' });
-  border02 = style({ gridRow: '1', gridColumn: '11', width: '2vh', height: '2vh' });
-  border10 = style({ gridRow: '2', gridColumn: '2', width: '2vh', height: '96vh' });
-  border12 = style({ gridRow: '2', gridColumn: '11', width: '2vh', height: '96vh' });
-  border20 = style({ gridRow: '10', gridColumn: '2', width: '2vh', height: '2vh' });
-  border21 = style({ gridRow: '10', gridColumn: '3', width: '96vh', height: '2vh' });
-  border22 = style({ gridRow: '10', gridColumn: '11', width: '2vh', height: '2vh' });
-  leftSidebar0 = style({ gridRow: '2', gridColumn: '1', width: '12vh', height: '12vh' });
-  leftSidebar1 = style({ gridRow: '3', gridColumn: '1', width: '12vh', height: '12vh' });
-  rightSidebar0 = style({ gridRow: '2', gridColumn: '12', width: '12vh', height: '12vh' });
-  rightSidebar1 = style({ gridRow: '3', gridColumn: '12', width: '12vh', height: '12vh' });
-  rightSidebar2 = style({ gridRow: '4', gridColumn: '12', width: '12vh', height: '12vh' });
-  rightSidebar3 = style({ gridRow: '5', gridColumn: '12', width: '12vh', height: '12vh' });
-
+  displayBlock = style2({ display: 'block', width: '2vh', height: '2vh' });
+  displayInherit = style2({ width: '2vh', height: '2vh' });
+  border00 = style2({ gridRow: '1', gridColumn: '2' });
+  border01 = style2({ gridRow: '1', gridColumn: '3', width: '96vh', height: '2vh' });
+  border02 = style2({ gridRow: '1', gridColumn: '11', width: '2vh', height: '2vh' });
+  border10 = style2({ gridRow: '2', gridColumn: '2', width: '2vh', height: '96vh' });
+  border12 = style2({ gridRow: '2', gridColumn: '11', width: '2vh', height: '96vh' });
+  border20 = style2({ gridRow: '10', gridColumn: '2', width: '2vh', height: '2vh' });
+  border21 = style2({ gridRow: '10', gridColumn: '3', width: '96vh', height: '2vh' });
+  border22 = style2({ gridRow: '10', gridColumn: '11', width: '2vh', height: '2vh' });
+  leftSidebar0 = style2({ gridRow: '2', gridColumn: '1', width: '12vh', height: '12vh' });
+  leftSidebar1 = style2({ gridRow: '3', gridColumn: '1', width: '12vh', height: '12vh' });
+  rightSidebar0 = style2({ gridRow: '2', gridColumn: '12', width: '12vh', height: '12vh' });
+  rightSidebar1 = style2({ gridRow: '3', gridColumn: '12', width: '12vh', height: '12vh' });
+  rightSidebar2 = style2({ gridRow: '4', gridColumn: '12', width: '12vh', height: '12vh' });
+  rightSidebar3 = style2({ gridRow: '5', gridColumn: '12', width: '12vh', height: '12vh' });
+  counterBar = style2({ gridRow: '10', gridColumn: '3', width: '96vh', height: '2vh' });
+  hands3 = style2({ position: 'relative', width: '95vh' });
   innerBoardStyles: String[];
 
   constructor(
@@ -107,7 +156,7 @@ export class AppComponent implements OnInit {
     this.innerBoardStyles = [];
     for (let i = 0; i < 64; i++) {
       this.innerBoardStyles.push(
-        style(
+        style2(
           {
             gridColumn: ((i % 8) + 2 + 1).toString(),
             gridRow: (Math.trunc(i / 8) + 2).toString()
