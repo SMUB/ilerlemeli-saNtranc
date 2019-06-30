@@ -164,6 +164,7 @@ export class OyunTahtasi {
         const hamleler = new Array<ReelHamle>();
         let muadilHamleler = new Array<ReelHamle>();
 
+        // Collect all possible movements for all white pieces in play
         for (const i in this.yerler) {
             for (const j in this.yerler[i]) {
                 if (this.yerler[i][j].getTash() && this.yerler[i][j].getTash().oyuncu === Oyuncu.beyaz) {
@@ -173,15 +174,15 @@ export class OyunTahtasi {
             }
         }
 
-        // TODO filter() fonksiyonu bos array mi donduruyor bak
+        // Look for white piece moves that will remove a black piece from board
         let filtreHamleler = hamleler.filter(hamle => hamle.hamlecinsi === Hamlecinsi.yeme);
 
-        // ya yeme hamlesi yoksa
+        // If there are no moves that immediately remove a black piece replace empty array with possible moves
         if (filtreHamleler.length <= 0) {
             filtreHamleler = hamleler.filter(hamle => hamle.hamlecinsi === Hamlecinsi.yurume);
         }
 
-        // yurume hamlesi varsa
+        // Assuming there are any legal moves at all pick a random one and make a shortlist of all moves that also end up in the same target
         if (filtreHamleler.length > 0) {
             const index = Math.floor(Math.random() * filtreHamleler.length);
             const nominalI = filtreHamleler[index].hedefI;
@@ -189,39 +190,24 @@ export class OyunTahtasi {
             muadilHamleler = filtreHamleler.filter(hamle => hamle.hedefI === nominalI && hamle.hedefJ === nominalJ);
         }
 
-        return muadilHamleler.reduce(
-            (previousValue, currentValue) => { // callbackfn
-                if (previousValue === null) {
-                    return currentValue;
-                } else if (
-                    (currentValue.cikisYer.getTash() instanceof UstPiyon
-                        && previousValue.cikisYer.getTash() instanceof UstPiyon)
-                    || (currentValue.cikisYer.getTash() instanceof Kale
-                        && previousValue.cikisYer.getTash() instanceof Kale)
-                    || (currentValue.cikisYer.getTash() instanceof At
-                        && previousValue.cikisYer.getTash() instanceof At)
-                    || (currentValue.cikisYer.getTash() instanceof Fil
-                        && previousValue.cikisYer.getTash() instanceof Fil)) {
-                    // When two pieces of equal value target the same coordinates, roll d2 to resolve TODO refactor eventually
-                    return Math.random() > 0.5 ? currentValue : previousValue;
-                } else if (currentValue.cikisYer.getTash() instanceof Kale
-                    && previousValue.cikisYer.getTash() instanceof UstPiyon) {
-                    return currentValue;
-                } else if (currentValue.cikisYer.getTash() instanceof At
-                    && (previousValue.cikisYer.getTash() instanceof Kale
-                        || previousValue.cikisYer.getTash() instanceof UstPiyon)) {
-                    return currentValue;
-                } else if (currentValue.cikisYer.getTash() instanceof Fil
-                    && (previousValue.cikisYer.getTash() instanceof At
-                        || previousValue.cikisYer.getTash() instanceof Kale
-                        || previousValue.cikisYer.getTash() instanceof UstPiyon)) {
-                    return currentValue;
-                } else {
-                    return previousValue;
-                }
-            },
-            null // initialValue
-        );
+        // Among the shortlisted moves, find the move that has the highest ranking moving piece
+        let priorityMoves;
+        // is there any bishops?
+        if (muadilHamleler.find(value => value.cikisYer.getTash() instanceof Fil)) {
+            //then filter all bishops
+            priorityMoves = muadilHamleler.filter(move => move.cikisYer.getTash() instanceof Fil);
+        } else if (muadilHamleler.find(value => value.cikisYer.getTash() instanceof At)) {
+            priorityMoves = muadilHamleler.filter(move => move.cikisYer.getTash() instanceof At);
+        } else if (muadilHamleler.find(value => value.cikisYer.getTash() instanceof Kale)) {
+            priorityMoves = muadilHamleler.filter(move => move.cikisYer.getTash() instanceof Kale);
+        } else if (muadilHamleler.find(value => value.cikisYer.getTash() instanceof UstPiyon)) {
+            priorityMoves = muadilHamleler.filter(move => move.cikisYer.getTash() instanceof UstPiyon);
+        } else {
+            // if somehow list is empty return null
+            return null;
+        }
+        // pick a random element
+        return priorityMoves[Math.floor(Math.random() * priorityMoves.length)];
     }
 
     oyunAlaniYurut() {
