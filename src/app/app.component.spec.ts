@@ -61,14 +61,14 @@ describe('Game mechanics', () => {
 
     // Inject test layout 
     app.oyuntahtasi.piecesService.pieceSequence = [
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
       [-3, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, -4, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
       [-2, 0, 0, 0, 0, 0, 0, 0],
-      [0, 1, 0, 0, 0, 0, 0, 0]
+      [0, 1, 0, 0, 0, 0, 0, 0],
+      [-3, 0, 0, 0, 0, 0, 0, 0],
+      [-4, 0, 0, 0, 0, 0, 0, 0],
+      [-2, 0, -2, 0, 0, 0, 0, 0],
+      [0, 1, 0, 1, 0, 0, 0, 0]
     ];
     app.oyuntahtasi.deploy()
   }));
@@ -96,7 +96,7 @@ describe('Game mechanics', () => {
     }
   }));
 
-  it('should move zombie bishop when human pawn moves', async(() => {
+  it('should move zombie bishop when human lower left pawn moves', async(() => {
     const compiled = fixture.debugElement.nativeElement;
     fixture.detectChanges();
     // select sacrifical pawn
@@ -108,5 +108,36 @@ describe('Game mechanics', () => {
     let pieceContentOfCell = compiled.querySelector(`#C49`).querySelector('.piece');
     let fileName = pieceContentOfCell.attributes.getNamedItem('src').value;
     expect(fileName).toEqual('./assets/-4.png');
+  }));
+
+  it('should move zombie knight when human upper left pawn moves', async(() => {
+    const compiled = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+    // select sacrifical pawn
+    app.yerTiklama(25);
+    // move pawn one forward
+    app.yerTiklama(17);
+    // re render and check if he is consumed by bishop
+    fixture.detectChanges();
+    let pieceContentOfCell = compiled.querySelector(`#C17`).querySelector('.piece');
+    let fileName = pieceContentOfCell.attributes.getNamedItem('src').value;
+    expect(fileName).toEqual('./assets/-3.png');
+  }));
+
+  it('should move zombie rook when human lower middle pawn moves', async(() => {
+    const compiled = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+    // select sacrifical pawn
+    app.yerTiklama(59);
+    // move pawn one forward
+    app.yerTiklama(51);
+    // re render and check if he is consumed by bishop
+    fixture.detectChanges();
+    let pieceContentOfCell = compiled.querySelector(`#C51`).querySelector('.piece');
+    let fileName = pieceContentOfCell.attributes.getNamedItem('src').value;
+    expect(fileName).toEqual('./assets/-2.png');
+    // perform secondary check to make sure other rooks didn't move     
+    expect(compiled.querySelector(`#C51`).querySelector('.piece').attributes.getNamedItem('src').value).toEqual('./assets/-2.png');
+    expect(compiled.querySelector(`#C16`).querySelector('.piece').attributes.getNamedItem('src').value).toEqual('./assets/-2.png');
   }));
 });
